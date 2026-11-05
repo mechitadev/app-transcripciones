@@ -1,0 +1,26 @@
+# Meeting Transcription
+
+  Meeting started: 01/11/2026, 16:00:15
+  Duration: 9 minutes
+  Participants: Mariana Gómez, Roberto Díaz
+
+  [View original transcript](https://app.tactiq.io/api/2/u/m/r/demo-meeting-security-003?o=txt)
+
+  ## Transcript
+
+  00:00 Mariana Gómez: Hola Roberto, gracias por conectarte de emergencia para revisar el informe de seguridad.
+00:05 Roberto Díaz: Hola Mariana, estuve revisando los logs del servidor y vi los intentos repetidos de autenticación.
+00:15 Mariana Gómez: Sí, exactamente. Lo que vamos a hacer hoy es cerrar las brechas antes del despliegue a producción.
+00:35 Roberto Díaz: Detectamos que si se guarda el token JWT en el LocalStorage del navegador, quedamos expuestos a vulnerabilidades de Cross-Site Scripting.
+00:58 Mariana Gómez: Totalmente. Lo más ideal es que el token se almacene exclusivamente en una cookie segura con atributos HttpOnly, Secure y SameSite Lax. De esa forma ningún script de terceros puede extraer la sesión.
+01:25 Roberto Díaz: De acuerdo, esa es la decisión correcta de seguridad. Además, tenemos dos opciones para implementar la protección contra ataques de fuerza bruta en el endpoint de login: usar Redis externo o aprovechar el throttler nativo de CodeIgniter 4 con almacenamiento en caché local.
+01:52 Mariana Gómez: Como queremos mantener la infraestructura ligera y sin costos de servidor innecesarios, lo más ideal es que usemos el Throttler nativo de CI4 configurado a 5 intentos por minuto por dirección IP.
+02:18 Roberto Díaz: Perfecto. Habría que crear un filtro de seguridad `AuthFilter` que intercepte todas las rutas de la API bajo `/api/` y valide el header `Authorization: Bearer` o la cookie de sesión.
+02:44 Mariana Gómez: Sí, y nos tocaría a nosotros hacer una revisión exhaustiva de las variables de entorno en el archivo `.env` para garantizar que la clave secreta `JWT_SECRET` tenga una entropía de al menos 256 bits y no esté quemada en el repositorio.
+03:12 Roberto Díaz: Muy importante eso. Roberto Díaz presentaría la implementación del filtro de autenticación y la validación de expiración del token para mañana a primera hora.
+03:38 Mariana Gómez: Excelente. Yo me encargo de configurar los encabezados de seguridad HTTP: Content-Security-Policy, X-Frame-Options en DENY y X-Content-Type-Options en nosniff.
+04:02 Roberto Díaz: ¿Hay alguna limitación con el CORS para el frontend local?
+04:18 Mariana Gómez: Sí, los dos caminos conducen a lo mismo a una limitante si el origen no está explícitamente listado en la configuración. Queda pendiente que Mariana defina el array de orígenes permitidos en `app/Config/CORS.php`.
+04:45 Roberto Díaz: Entendido, con eso cubrimos todas las observaciones de la auditoría.
+05:00 Mariana Gómez: Perfecto Roberto, muchas gracias por tu tiempo y seguimos coordinando por el canal interno.
+05:12 Roberto Díaz: Saludos Mariana, seguimos avanzando.

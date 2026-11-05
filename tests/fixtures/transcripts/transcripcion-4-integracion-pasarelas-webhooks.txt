@@ -1,0 +1,30 @@
+# Meeting Transcription
+
+  Meeting started: 03/11/2026, 11:30:00
+  Duration: 11 minutes
+  Participants: Sofía Herrera, Daniel Vargas, Camila Peña
+
+  [View original transcript](https://app.tactiq.io/api/2/u/m/r/demo-meeting-payments-004?o=txt)
+
+  ## Transcript
+
+  00:00 Sofía Herrera: Buenos días equipo, iniciamos la sesión para revisar la integración con las pasarelas de pago.
+00:08 Daniel Vargas: Hola Sofía, hola Camila, listos por aquí.
+00:15 Camila Peña: Buenos días a todos.
+00:18 Camila Peña: Hola, estoy transcribiendo esta llamada con mi extensión Tactiq AI. https://tactiq.io/r/transcribing
+00:25 Sofía Herrera: Bien, lo que vamos a hacer hoy es resolver el flujo de confirmación de pagos cuando el usuario completa la transacción.
+00:50 Daniel Vargas: Estuve revisando el flujo actual y tenemos dos opciones para implementar la confirmación: confiar en la redirección del navegador del cliente o procesar el evento de forma asíncrona mediante webhooks del servidor.
+01:15 Camila Peña: Si confiamos en el cliente y el usuario cierra la pestaña antes de volver al sitio, la orden se queda en el limbo sin confirmar.
+01:40 Sofía Herrera: Totalmente. Lo más ideal es que toda confirmación se procese mediante webhooks con firma HMAC verificada, y que el estado de la orden solo pase a `pagado` cuando el webhook sea validado.
+02:05 Daniel Vargas: De acuerdo, esa es la decisión técnica definitiva. Además, hay que tener una clave de idempotencia única basada en el ID de la transacción para evitar procesar cobros duplicados si la pasarela reintenta el webhook.
+02:35 Camila Peña: Excelente. Ahora tenemos una limitación importante: las credenciales del entorno sandbox de Stripe vencieron ayer y las pruebas están fallando con error 401 Unauthorized.
+03:02 Daniel Vargas: Sí, los dos caminos conducen a lo mismo a una limitante mientras no tengamos las llaves actualizadas en el panel de desarrollador.
+03:25 Sofía Herrera: Entonces queda pendiente que Daniel Vargas renueve las credenciales de la API en el panel y las agregue al archivo `.env` del equipo.
+03:50 Daniel Vargas: Daniel Vargas presentaría las credenciales renovadas hoy mismo a las dos de la tarde para que puedan continuar con las pruebas.
+04:15 Sofía Herrera: Perfecto. Por mi parte, voy a exponer el nuevo controlador de webhooks `PaymentWebhookController` con la verificación criptográfica de la cabecera `Stripe-Signature`.
+04:42 Camila Peña: Y en el frontend, nos tocaría a nosotros hacer la actualización en tiempo real para que la pantalla del checkout muestre el indicador de carga y cambie automáticamente a éxito cuando el webhook responda.
+05:10 Sofía Herrera: Habría que crear también una prueba automatizada que simule la llegada de un webhook con firma inválida para garantizar que retorne un código HTTP 400 Bad Request.
+05:35 Daniel Vargas: Muy buena idea, así aseguramos la cobertura de pruebas de seguridad antes de salir a producción.
+06:00 Sofía Herrera: Listo equipo, tenemos el plan claro. Nos vemos en el daily de seguimiento.
+06:12 Camila Peña: Perfecto, ¡gracias a todos!
+06:18 Daniel Vargas: Hasta luego, que tengan buen día.

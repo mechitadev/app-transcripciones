@@ -30,10 +30,17 @@
 # DATABASE
 #--------------------------------------------------------------------
 
+# OPCIÓN 1: SQLite3 + FTS5 (Recomendada - Ya configurada en app/Config/Database.php)
+# No requiere usuario ni contraseña; usa el archivo en writable/database/transcripciones.db
+database.default.DBDriver = SQLite3
+# database.default.database = 'C:/wamp64/www/App-transcripciones/writable/database/transcripciones.db'
+database.default.DBPrefix =
+
+# OPCIÓN 2: MySQL / MariaDB (Si usas phpMyAdmin en WampServer)
 # database.default.hostname = localhost
-# database.default.database = ci4
+# database.default.database = app_transcripciones
 # database.default.username = root
-# database.default.password = root
+# database.default.password =
 # database.default.DBDriver = MySQLi
 # database.default.DBPrefix =
 # database.default.port = 3306
@@ -141,3 +148,23 @@
 #--------------------------------------------------------------------
 
 # curlrequest.shareOptions = false
+
+#--------------------------------------------------------------------
+# AUTH (JWT + GOOGLE OAUTH 2.0)
+#--------------------------------------------------------------------
+# Clave secreta para firmar tokens JWT con algoritmo HS256
+auth.jwtSecret = 'cambia-esta-clave-secreta-jwt-256-bits-en-produccion'
+auth.jwtTtlSeconds = 28800
+auth.googleClientId = ''
+auth.googleClientSecret = ''
+
+#--------------------------------------------------------------------
+# MODELO DE IA GRATUITO (app/Config/AI.php y app/Libraries/AI/)
+#--------------------------------------------------------------------
+# Proveedores gratuitos soportados: 'gemini' | 'groq' | 'ollama' | 'local'
+# ai.provider = 'gemini'
+# ai.apiKey = ''
+# ai.model = 'gemini-2.5-flash'
+# ai.ollamaBaseUrl = 'http://localhost:11434'
+# ai.timeoutSeconds = 8
+

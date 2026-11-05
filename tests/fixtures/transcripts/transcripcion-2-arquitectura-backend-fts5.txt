@@ -1,0 +1,33 @@
+# Meeting Transcription
+
+  Meeting started: 28/10/2026, 10:15:30
+  Duration: 12 minutes
+  Participants: Andrés Morales, Laura Castro, Javier Quintana
+
+  [View original transcript](https://app.tactiq.io/api/2/u/m/r/demo-meeting-architecture-002?o=txt)
+
+  ## Transcript
+
+  00:00 Laura Castro: Buenos días equipo, bienvenidos a la sesión técnica de arquitectura.
+00:03 Andrés Morales: Hola Laura, hola Javier, listos para revisar la base de datos.
+00:07 Javier Quintana: Buenos días a todos.
+00:10 Laura Castro: Bien, lo que vamos a hacer hoy es definir el motor de búsqueda y la persistencia de las transcripciones.
+00:25 Andrés Morales: Estuve analizando el rendimiento y tenemos dos opciones para implementar el buscador: hacer consultas LIKE tradicionales sobre SQLite o habilitar la extensión virtual FTS5 con tokenizador unicode61.
+00:48 Javier Quintana: Con LIKE vamos a tener un consumo de CPU enorme cuando tengamos miles de intervenciones. Lo más ideal es que usemos SQLite FTS5 directamente, porque permite búsquedas instantáneas en milisegundos sin sobrecargar el servidor.
+01:10 Andrés Morales: Exacto. Además, FTS5 nos permite indexar de una vez el contenido y el hablante. Habría que crear una tabla virtual `decisions_fts` y sincronizarla con triggers automáticos.
+01:35 Laura Castro: Totalmente de acuerdo, esa es la decisión de arquitectura. Ahora, respecto a la inserción de las intervenciones, ayer revisé el código y vi que se estaban haciendo inserts uno por uno dentro de un bucle.
+01:58 Javier Quintana: Sí, eso genera un cuello de botella terrible de tipo N+1. Nos tocaría a nosotros hacer una refactorización para usar `insertBatch` dentro de una transacción explícita de base de datos.
+02:22 Andrés Morales: Sí, porque si no usamos transacciones en lote, SQLite bloquea el archivo en cada inserción individual y los dos caminos conducen a lo mismo a una limitante de concurrencia.
+02:45 Laura Castro: Bien, entonces queda pendiente que Andrés configure la migración con la tabla FTS5 y los índices correspondientes.
+03:08 Andrés Morales: Sí, yo me encargo de eso hoy mismo en CodeIgniter 4. Voy a exponer los cambios en el pull request antes del almuerzo.
+03:30 Laura Castro: Perfecto. Y Javier, ¿tú podrías implementar el método del repositorio para la inserción masiva con `insertBatch`?
+03:52 Javier Quintana: Seguro, Javier Quintana presentaría la implementación con la transacción atómica y las pruebas unitarias para validar que no queden bloqueos.
+04:15 Laura Castro: Excelente. También hay que tener en cuenta que si el usuario sube un archivo duplicado, debemos evitar que se dupliquen registros basuras en la base de datos.
+04:38 Andrés Morales: Para eso lo más ideal es que calculemos el hash SHA-256 del archivo en una sola pasada y verifiquemos si ya existe antes de procesar el texto.
+05:02 Laura Castro: Muy bien pensado. Por último, en el frontend vamos a colocar un debounce de 300 milisegundos en el campo de búsqueda para no disparar peticiones innecesarias mientras el usuario escribe.
+05:25 Javier Quintana: De acuerdo, eso protege el endpoint y la experiencia de usuario se siente super fluida.
+05:40 Andrés Morales: ¿Tenemos algún bloqueo de credenciales o dependencias externas?
+05:55 Laura Castro: No, todo corre sobre PHP nativo y SQLite local, así que no dependemos de servicios externos de pago para esta fase.
+06:15 Javier Quintana: Excelente, entonces manos a la obra.
+06:25 Andrés Morales: Listo equipo, nos vemos en la tarde para la integración.
+06:30 Laura Castro: Gracias a todos, que tengan buen día.

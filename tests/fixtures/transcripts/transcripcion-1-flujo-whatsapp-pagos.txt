@@ -1,0 +1,51 @@
+# Meeting Transcription
+
+  Meeting started: 23/10/2026, 8:48:01
+  Duration: 7 minutes
+  Participants: Carlos Méndez, Valentina Silva
+
+  [View original transcript](https://app.tactiq.io/api/2/u/m/r/demo-meeting-sanitized-001?o=txt)
+
+  ## Transcript
+
+  00:00 Valentina Silva: Qué bueno
+00:00 Carlos Méndez: Hola Vale, buenos días
+00:02 Valentina Silva: Cómo estás
+00:04 Carlos Méndez: Eso es lo que te iba a decir, pues me creía que o sea que no le vamos a pasar
+00:06 Valentina Silva: Qué bueno, qué bueno Carlos. Para la reunión de hoy básicamente no tenemos algo nuevo que mostrar, ¿no? Primero porque
+00:23 Carlos Méndez: que lo que vamos a hacer porque obviamente no hay.
+00:29 Valentina Silva: Hola, estoy transcribiendo esta llamada con mi extensión Tactiq AI. https://tactiq.io/r/transcribing
+00:32 Valentina Silva: Se quedó, nos quedamos en espera para saber cuál es realmente los campos que se van a colocar este con lo de la verificación de WhatsApp. No sé si viste el correo, ahí en este caso voy a exponer, este se va a decir que todavía la verificación de este WhatsApp no se ha implementado porque las dos opciones para implementar por High Level, verdad, que una es a través de unos mini Coin este.
+01:12 Valentina Silva: Y la otra es bajo un flujo de trabajo que se hace desde el High Level. Los dos van al mismo punto o el mismo final que dependen de una plantilla para que Meta no bloquee el mensaje. Entonces bueno por ahí, este David indicó sobre que tendríamos
+01:36 Carlos Méndez: ok
+01:39 Valentina Silva: que tener esa plantilla, ellos tendrían que crear la plantilla y pasársela, pues él igual lo va a trabajar por ahí, pero es como para que si ellos digan o dicen no, pero este si hablamos que es por el API dice no, pero lo pueden hacer por el flujo de trabajo este o viceversa, no le explicamos que se puede hacer por el flujo de trabajo y vayan a decir no, pero hay una manera de hacerla a través del Point, o sea, pero los dos caminos conducen a lo mismo a una limitante.
+02:12 Valentina Silva: y la
+02:12 Carlos Méndez: O sea hay que tener a necesitar la plantilla.
+02:15 Valentina Silva: Ajá que necesita la plantilla. Nada, este lo de la otra lo de las condiciones. Lo de aceptar los términos y condiciones. Se habló por encima, ¿verdad? Porque no sabemos en qué parte del flujo lo vamos a colocar. Me dice David Mendoza que si lo va a colocar en el formulario o entre las materias el paso entre las materias y el pago.
+02:50 Carlos Méndez: O sea, debe estar lo más ahí lo más ideal es que sean cualquiera de los pasos, pero que esté antes del pago, porque si ya él llega al pago y después que se le dice que tiene que aceptar unos términos de condiciones, ya no le queda de otra, pero si delante lo ve y no le parece bueno ajá porque chocan con sus políticas o sus cosas.
+03:07 Valentina Silva: No paga.
+03:11 Carlos Méndez: No sé, cualquier cosa.
+03:13 Valentina Silva: Sí, igual esa aceptación en términos y condiciones no vamos a mostrar nada, el contenido sí me lo hicieron llegar ayer pero en la tarde y bueno a eso no dio chance realmente de abordarlo para hoy. Entonces nada, yo creo que lo que vamos a hacer hoy es a discutir esas limitaciones que se han tenido y en todo caso no sé si la parte del descuento sea necesario yo después explicárselo.
+03:46 Valentina Silva: O sea, en la parte de los pagos hasta dónde avanzaste ahí, pregunto, no sé si al balance allí si no.
+03:54 Carlos Méndez: Vale, te voy a decir la verdad, no avancé.
+03:56 Valentina Silva: Bueno entonces no
+03:58 Carlos Méndez: Es más, te iba a decir que hoy me voy a ausentar una hora más o menos porque tengo una diligencia médica de control personal para retirar unos análisis y pasar a la farmacia a buscar un tratamiento.
+04:20 Valentina Silva: Bueno claro, sin problema.
+04:22 Carlos Méndez: Sí, ya todo está en orden pero debo cumplir con ese horario para que no se me pase el turno de atención.
+04:39 Valentina Silva: Claro, totalmente entendible.
+04:42 Carlos Méndez: Entonces paso primero por allá y luego me conecto de inmediato para seguir con las tareas pendientes.
+04:55 Valentina Silva: Ah okay, perfecto, no te preocupes, entonces esa parte no la
+04:56 Carlos Méndez: tocamos.
+05:01 Valentina Silva: No se toca, y porque ya o lo que pudiéramos hacer es la parte de los pagos en el caso que hablen algo más allí, porque nosotros presentamos la forma
+05:12 Carlos Méndez: claro
+05:15 Valentina Silva: de pago por Zelle verdad, pero las otras formas de pago no sé si se las detallamos.
+05:21 Carlos Méndez: Habría que crear una ¿cómo se llama?
+05:26 Valentina Silva: De prueba, una deuda simbólica de un dólar.
+05:28 Carlos Méndez: Ajá, o sea una inscripción calculada de un dólar simbólico para probar el flujo.
+05:33 Valentina Silva: Ajá exacto, es lo que se me ocurre por hoy y para mañana en la demo si se tiene lo de la plantilla pues David presentaría lo que es esa verificación por WhatsApp y verificación por WhatsApp entre comillas. Este y ahí igual se habla, se le dice al director el tema de la verificación de WhatsApp para que quede claro que al final de cuentas si no se verifica ese número van a quedar como que hay registros ahí basuras y que después no nos tocaría a nosotros hacer un... Aunque mentira, no voy a mencionar eso porque David dice que él lo quiere manejar por el CRM y si bueno si lo maneja y él no quiere como que utilizar campos, yo sé si no utilizas los campos.
+06:40 Valentina Silva: No va a tener un campo de estados como que verificado o rechazado como para después correr alguna rutina que borre esos contactos que no están verificados, sino que quedaron simplemente allí quizás con nombres mal escritos, o sea, que fuera un registro realmente cerrado que no simplemente alguien se metió como para probar. Bueno nada, entonces nos reunimos ahorita a las nueve y media, yo voy a preparar las notas de la reunión.
+07:30 Valentina Silva: Voy a revisar el documento antes de entrar.
+07:33 Carlos Méndez: Perfecto, por si acaso.
+07:34 Valentina Silva: Sí, para tener todo listo hasta la tarde. Entonces tú vas a la diligencia y nos vemos en la sesión. No sé cuánto vaya a demorar, pero bueno nada, estamos entonces ahorita en contacto.
+07:51 Carlos Méndez: Claro, dale dale.
+07:57 Valentina Silva: Dale.

@@ -4,6 +4,7 @@
 
 .agents/resources/
 graphify-out/
+node_modules/
 
 # OS X
 .DS_Store
@@ -51,6 +52,8 @@ Vagrantfile
 #-------------------------
 # Temporary Files
 #-------------------------
+writable/database/*
+!writable/database/.gitkeep
 writable/cache/*
 !writable/cache/index.html
 

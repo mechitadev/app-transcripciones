@@ -1,0 +1,16 @@
+{
+  "name": "app-transcripciones",
+  "version": "1.0.0",
+  "description": "App-Transcripciones - CodeIgniter 4 con Tailwind CSS v4",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i ./resources/css/app.css -o ./public/assets/css/tailwind.css --minify",
+    "dev": "tailwindcss -i ./resources/css/app.css -o ./public/assets/css/tailwind.css --watch",
+    "build:css": "tailwindcss -i ./resources/css/app.css -o ./public/assets/css/tailwind.css --minify",
+    "dev:css": "tailwindcss -i ./resources/css/app.css -o ./public/assets/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.4",
+    "tailwindcss": "^4.3.4"
+  }
+}

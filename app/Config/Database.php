@@ -28,11 +28,11 @@ class Database extends Config
      */
     public array $default = [
         'DSN'          => '',
-        'hostname'     => 'localhost',
+        'hostname'     => '',
         'username'     => '',
         'password'     => '',
-        'database'     => '',
-        'DBDriver'     => 'MySQLi',
+        'database'     => WRITEPATH . 'database' . DIRECTORY_SEPARATOR . 'transcripciones.db',
+        'DBDriver'     => 'SQLite3',
         'DBPrefix'     => '',
         'pConnect'     => false,
         'DBDebug'      => true,
@@ -45,6 +45,8 @@ class Database extends Config
         'failover'     => [],
         'port'         => 3306,
         'numberNative' => false,
+        'foreignKeys'  => true,
+        'busyTimeout'  => 2000,
     ];
 
     /**

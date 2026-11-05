@@ -55,4 +55,33 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = \Config\Services::session();
     }
+
+    /**
+     * Obtiene el payload de la petición soportando JSON, raw input (PATCH/DELETE) y POST estándar.
+     *
+     * @return array<string, mixed>
+     */
+    protected function getRequestPayload(): array
+    {
+        if (! ($this->request instanceof IncomingRequest)) {
+            return [];
+        }
+
+        $rawBody = (string) $this->request->getBody();
+        if ($rawBody !== '') {
+            $decoded = json_decode($rawBody, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                return $decoded;
+            }
+        }
+
+        $raw = $this->request->getRawInput();
+        if (is_array($raw) && $raw !== []) {
+            return $raw;
+        }
+
+        $post = $this->request->getPost();
+
+        return is_array($post) ? $post : [];
+    }
 }
