@@ -153,10 +153,10 @@ database.default.DBPrefix =
 # AUTH (JWT + GOOGLE OAUTH 2.0)
 #--------------------------------------------------------------------
 # Clave secreta para firmar tokens JWT con algoritmo HS256
-auth.jwtSecret = 'cambia-esta-clave-secreta-jwt-256-bits-en-produccion'
-auth.jwtTtlSeconds = 28800
-auth.googleClientId = '857289439418-spkmg37451utmf0rf42s792rujo0pp06.apps.googleusercontent.com'
-auth.googleClientSecret = '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'
+# auth.jwtSecret = 'cambia-esta-clave-secreta-jwt-256-bits-en-produccion'
+# auth.jwtTtlSeconds = 28800
+# auth.googleClientId = 'tu-client-id.apps.googleusercontent.com'
+# auth.googleClientSecret = 'tu-google-client-secret'
 
 #--------------------------------------------------------------------
 # MODELO DE IA GRATUITO (app/Config/AI.php y app/Libraries/AI/)
