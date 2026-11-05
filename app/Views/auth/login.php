@@ -26,10 +26,10 @@ $taglineLines = [
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Transcripciones · Minutas ejecutivas, tareas accionables y buscador semántico de decisiones técnicas en SQLite</title>
+    <title>Unitrax · Minutas ejecutivas, tareas accionables y buscador semántico de decisiones técnicas en SQLite</title>
     <meta name="description" content="Convierte archivos .txt de reuniones en minutas editables, tareas con responsable y decisiones técnicas indexadas con SQLite FTS5.">
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="App Transcripciones · Minutas ejecutivas, tareas accionables y buscador semántico de decisiones técnicas en SQLite">
+    <meta property="og:title" content="Unitrax · Minutas ejecutivas, tareas accionables y buscador semántico de decisiones técnicas en SQLite">
     <meta property="og:description" content="Convierte archivos .txt de reuniones en minutas editables, tareas con responsable y decisiones técnicas indexadas con SQLite FTS5.">
     <meta property="og:type" content="website">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z'/%3E%3C/svg%3E">
@@ -66,7 +66,7 @@ $taglineLines = [
 
     <!-- Barra de Navegación Flotante Superior -->
     <header class="sticky top-4 z-40 mx-auto max-w-6xl px-4 sm:px-6">
-        <nav aria-label="App Transcripciones" class="flex items-center justify-between rounded-2xl border border-slate-200/90 bg-white/85 px-4 py-3 backdrop-blur-md transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] dark:border-[#313131] dark:bg-[#1F1F1F]/85">
+        <nav aria-label="Unitrax" class="flex items-center justify-between rounded-2xl border border-slate-200/90 bg-white/85 px-4 py-3 backdrop-blur-md transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] dark:border-[#313131] dark:bg-[#1F1F1F]/85">
             <!-- Marca -->
             <a href="#main-content" class="flex items-center gap-3 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
                 <span class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
@@ -78,25 +78,11 @@ $taglineLines = [
                     </svg>
                 </span>
                 <span class="text-base font-bold tracking-tight text-slate-900 dark:text-white">
-                    App Transcripciones
+                    Unitrax
                 </span>
             </a>
 
-            <!-- Enlaces Escritorio -->
-            <div class="hidden md:flex md:items-center md:gap-6">
-                <a href="#funcionalidades" class="text-sm font-medium text-slate-600 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white">
-                    Beneficios
-                </a>
-                <a href="#flujo" class="text-sm font-medium text-slate-600 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white">
-                    Cómo funciona
-                </a>
-                <a href="#arquitectura" class="text-sm font-medium text-slate-600 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white">
-                    Ejecución local verificable
-                </a>
-                <a href="#preguntas" class="text-sm font-medium text-slate-600 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white">
-                    Preguntas frecuentes
-                </a>
-            </div>
+
 
             <!-- Acciones Derecha -->
             <div class="flex items-center gap-2">
@@ -321,7 +307,7 @@ $taglineLines = [
                         <input type="text"
                                id="reg-name"
                                name="name"
-                               placeholder="Ej. Vanesa Machado"
+                               placeholder="Nombre apellido"
                                required
                                autocomplete="name"
                                class="mt-1.5 w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white dark:placeholder:text-zinc-500">
@@ -373,7 +359,17 @@ $taglineLines = [
                          data-callback="handleGoogleCredentialResponse"
                          data-auto_prompt="false">
                     </div>
-                    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-width="100%"></div>
+                    <div class="flex w-full items-center justify-center">
+                        <div class="g_id_signin flex justify-center"
+                             data-type="standard"
+                             data-size="large"
+                             data-theme="outline"
+                             data-text="continue_with"
+                             data-shape="rectangular"
+                             data-logo_alignment="left"
+                             data-width="320">
+                        </div>
+                    </div>
                 <?php else: ?>
                     <button type="button" id="btn-google-oauth" class="w-full inline-flex items-center justify-center gap-2.5 rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-800 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-slate-100 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-100 dark:hover:bg-[#313131]">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true">
@@ -405,357 +401,13 @@ $taglineLines = [
                 </div>
             </div>
         </section>
-
-        <!-- SECCIÓN 2: CONTRASTE PROBLEMA VS SOLUCIÓN (#funcionalidades) -->
-        <section id="funcionalidades" aria-labelledby="problem-heading" class="mt-24">
-            <div class="max-w-3xl">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    El problema habitual
-                </span>
-                <h2 id="problem-heading" class="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
-                    Del archivo .txt olvidado a una memoria técnica consultable
-                </h2>
-            </div>
-
-            <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                <!-- Antes -->
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="8" x2="12" y2="12"/>
-                            <line x1="12" y1="16" x2="12.01" y2="16"/>
-                        </svg>
-                    </div>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Acuerdos dispersos en archivos sueltos
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Las transcripciones quedan guardadas en carpetas sin índice. Nadie recuerda en qué minuto se aprobó una condición de pago, quién asumió cada entrega ni qué bloqueo técnico detuvo el avance.
-                    </p>
-                </article>
-
-                <!-- Después -->
-                <article class="rounded-2xl border border-emerald-500/40 bg-white p-6 dark:border-emerald-500/40 dark:bg-[#1F1F1F]">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M20 6 9 17l-5-5"/>
-                        </svg>
-                    </div>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Minutas vivas e indexadas con App Transcripciones
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Una sola pasada lineal procesa la sesión completa, vincula cada tarea con su autor real e indexa las decisiones de arquitectura en SQLite FTS5 conectadas a su marca MM:SS.
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 3: 4 BENEFICIOS MEDIBLES (grid-cols-1 md:grid-cols-2) -->
-        <section id="beneficios" aria-labelledby="benefits-heading" class="mt-24">
-            <div class="max-w-3xl">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    Resultados medibles
-                </span>
-                <h2 id="benefits-heading" class="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
-                    Todo lo que tu equipo necesita después de cada reunión técnica
-                </h2>
-            </div>
-
-            <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                <!-- Beneficio 1 -->
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M9 11l3 3L22 4"/>
-                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-                        </svg>
-                    </div>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Acuerdos accionables desde la primera lectura
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Extrae compromisos, responsables y marcas de tiempo MM:SS en un único recorrido lineal del archivo .txt sin releer ni duplicar sesiones gracias a la verificación SHA256.
-                    </p>
-                </article>
-
-                <!-- Beneficio 2 -->
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="11" cy="11" r="8"/>
-                            <path d="m21 21-4.3-4.3"/>
-                        </svg>
-                    </div>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Decisiones de arquitectura localizables en milisegundos
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Encuentra por qué se eligió un flujo de pago, una plantilla de mensajería o una regla de datos combinando el índice nativo SQLite FTS5 y el ranking bm25() con expansión semántica en español.
-                    </p>
-                </article>
-
-                <!-- Beneficio 3 -->
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                    </div>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Trazabilidad directa al diálogo original
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Salta desde cualquier tarea o bloqueo técnico hasta la línea exacta donde se dijo en la llamada, o crea acuerdos nuevos desde cualquier intervención con un clic.
-                    </p>
-                </article>
-
-                <!-- Beneficio 4 -->
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <div class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-100 text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                    </div>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Privacidad total en tu propio servidor
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Tus transcripciones, sesiones y minutas viven en una base SQLite local bajo tu control, funcionando al instante con heurísticas deterministas sin costo obligatorio o con modelos gratuitos opcionales.
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 4: B11 TAGLINE REVEAL PALABRA POR PALABRA -->
-        <section id="manifiesto" aria-label="App Transcripciones" class="my-28 py-12">
-            <div id="tagline-reveal-container" class="mx-auto max-w-4xl text-center">
-                <p class="max-w-[680px] mx-auto text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
-                    <?php foreach ($taglineLines as $lineIdx => $lineText): ?>
-                        <span class="block <?= $lineIdx > 0 ? 'mt-2' : '' ?>">
-                            <?php
-                            $words = preg_split('/\s+/u', trim($lineText)) ?: [];
-                            foreach ($words as $word):
-                            ?>
-                                <span class="tagline-word mr-2"><?= esc($word) ?></span>
-                            <?php endforeach; ?>
-                        </span>
-                    <?php endforeach; ?>
-                </p>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 5: CÓMO FUNCIONA EN 3 PASOS (#flujo) -->
-        <section id="flujo" aria-labelledby="how-heading" class="mt-24">
-            <div class="max-w-3xl">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    Flujo de trabajo
-                </span>
-                <h2 id="how-heading" class="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
-                    De archivo plano a base de conocimiento en tres pasos
-                </h2>
-            </div>
-
-            <div class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <span class="inline-flex rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 font-mono text-xs font-semibold text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
-                        01
-                    </span>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Sube tu archivo .txt o carga la muestra real
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Arrastra una transcripción exportada con marcas MM:SS Autor: Texto; el lector valida el archivo en una sola pasada, filtra avisos automáticos y extrae fecha, duración y participantes.
-                    </p>
-                </article>
-
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <span class="inline-flex rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 font-mono text-xs font-semibold text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
-                        02
-                    </span>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Revisa la minuta y gestiona las tareas del equipo
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Edita el resumen ejecutivo en línea, marca avances con un clic, reasigna responsables y descarga el acta completa en formato Markdown .md lista para compartir.
-                    </p>
-                </article>
-
-                <article class="rounded-2xl border border-slate-200 bg-white p-6 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <span class="inline-flex rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 font-mono text-xs font-semibold text-emerald-600 dark:border-[#313131] dark:bg-[#272727] dark:text-emerald-400">
-                        03
-                    </span>
-                    <h3 class="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                        Consulta decisiones técnicas en todas tus sesiones
-                    </h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Abre el buscador con Ctrl + K, filtra por categoría o participante y localiza al instante acuerdos de flujo, arquitectura o bloqueos operativos.
-                    </p>
-                </article>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 6: PRUEBA TÉCNICA Y GARANTÍA LOCAL (#arquitectura) -->
-        <section id="arquitectura" aria-labelledby="proof-heading" class="mt-24">
-            <div class="rounded-3xl border border-slate-200 bg-white p-8 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    Ejecución local verificable
-                </span>
-                <h2 id="proof-heading" class="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
-                    Control completo sobre tus actas y datos técnicos sin costos ocultos
-                </h2>
-                <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 dark:text-zinc-400">
-                    Sin tarjeta de crédito ni suscripciones obligatorias. Tus sesiones permanecen en SQLite local dentro de tu infraestructura, con cuenta semilla lista al instante y exportación libre en Markdown .md.
-                </p>
-
-                <div class="mt-6 flex flex-wrap gap-2">
-                    <span class="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 font-mono text-xs font-medium text-slate-800 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200">
-                        SQLite FTS5 bm25()
-                    </span>
-                    <span class="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 font-mono text-xs font-medium text-slate-800 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200">
-                        SHA256
-                    </span>
-                    <span class="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 font-mono text-xs font-medium text-slate-800 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200">
-                        O(n) MAX_LINES 50000
-                    </span>
-                    <span class="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 font-mono text-xs font-medium text-slate-800 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200">
-                        JWT HMAC SHA256
-                    </span>
-                    <span class="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 font-mono text-xs font-medium text-slate-800 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200">
-                        Markdown .md
-                    </span>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 7: 6 PREGUNTAS FRECUENTES TÉCNICAS (#preguntas) -->
-        <section id="preguntas" aria-labelledby="faq-heading" class="mt-24">
-            <div class="max-w-3xl">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                    Preguntas técnicas frecuentes
-                </span>
-                <h2 id="faq-heading" class="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
-                    Todo sobre el motor local, la privacidad y los formatos soportados
-                </h2>
-            </div>
-
-            <div class="mt-8 space-y-3">
-                <details class="group rounded-2xl border border-slate-200 bg-white p-5 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900 focus:outline-none dark:text-white">
-                        <span>¿Qué formato deben tener los archivos .txt que subo a la plataforma?</span>
-                        <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-open:rotate-45 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200" aria-hidden="true">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                        </span>
-                    </summary>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Acepta archivos de texto plano .txt de hasta 5 MB codificados en UTF8 o convertidos automáticamente al ingresar. Reconoce cabeceras como Meeting started, Duration, Participants, enlaces de transcripción original y líneas cronológicas con formato MM:SS Autor: Intervención, filtrando avisos automáticos de extensiones de grabación.
-                    </p>
-                </details>
-
-                <details class="group rounded-2xl border border-slate-200 bg-white p-5 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900 focus:outline-none dark:text-white">
-                        <span>¿Dónde se almacenan las transcripciones y qué privacidad ofrece SQLite?</span>
-                        <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-open:rotate-45 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200" aria-hidden="true">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                        </span>
-                    </summary>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Toda la información se guarda localmente en el archivo writable/database/transcripciones.db dentro de tu propio entorno CodeIgniter 4. Ninguna transcripción sale hacia terceros a menos que actives voluntariamente una clave de API para un proveedor externo en tu configuración .env.
-                    </p>
-                </details>
-
-                <details class="group rounded-2xl border border-slate-200 bg-white p-5 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900 focus:outline-none dark:text-white">
-                        <span>¿Cómo funciona el buscador semántico con SQLite FTS5?</span>
-                        <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-open:rotate-45 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200" aria-hidden="true">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                        </span>
-                    </summary>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Cada decisión técnica, acuerdo de arquitectura o bloqueo se indexa mediante triggers automáticos en una tabla virtual FTS5 que ordena resultados por relevancia con el algoritmo bm25(). Además, el motor expande tu consulta con sinónimos técnicos del dominio en español para hallar conceptos relacionados aunque no recuerdes la palabra literal.
-                    </p>
-                </details>
-
-                <details class="group rounded-2xl border border-slate-200 bg-white p-5 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900 focus:outline-none dark:text-white">
-                        <span>¿Cómo protege mis sesiones la autenticación híbrida con JWT y Google?</span>
-                        <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-open:rotate-45 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200" aria-hidden="true">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                        </span>
-                    </summary>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Al iniciar sesión con tus credenciales locales o mediante Google OAuth, el servidor sincroniza una sesión nativa de CodeIgniter 4 y emite en paralelo un token firmado con HMAC SHA256 en cookie HttpOnly y encabezado Bearer, protegiendo tanto las vistas web como cada endpoint JSON de la API.
-                    </p>
-                </details>
-
-                <details class="group rounded-2xl border border-slate-200 bg-white p-5 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900 focus:outline-none dark:text-white">
-                        <span>¿Necesito pagar una suscripción de inteligencia artificial para extraer minutas y tareas?</span>
-                        <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-open:rotate-45 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200" aria-hidden="true">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                        </span>
-                    </summary>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        No. La aplicación incluye por defecto un analizador heurístico determinista en español que funciona sin conexión y sin costo en milisegundos. Si deseas síntesis generativa adicional, puedes conectar modelos gratuitos compatibles en app/Config/AI.php conservando siempre el respaldo local automático si no hay red.
-                    </p>
-                </details>
-
-                <details class="group rounded-2xl border border-slate-200 bg-white p-5 dark:border-[#313131] dark:bg-[#1F1F1F]">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900 focus:outline-none dark:text-white">
-                        <span>¿Qué ocurre si subo dos veces el mismo archivo .txt o quiero llevarme la minuta a otra herramienta?</span>
-                        <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-open:rotate-45 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200" aria-hidden="true">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                        </span>
-                    </summary>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-                        Antes de procesar cualquier subida se calcula la huella criptográfica SHA256 del archivo para evitar duplicados y abrir de inmediato la reunión existente. En cualquier momento puedes exportar la minuta completa, las tareas con su estado y las decisiones técnicas en un archivo .md estándar.
-                    </p>
-                </details>
-            </div>
-        </section>
-
-        <!-- SECCIÓN 8: CTA FINAL -->
-        <section aria-labelledby="final-cta-heading" class="mt-24 rounded-3xl border border-slate-200 bg-white p-8 text-center sm:p-12 dark:border-[#313131] dark:bg-[#1F1F1F]">
-            <h2 id="final-cta-heading" class="mx-auto max-w-2xl text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
-                Empieza a indexar las decisiones técnicas de tu equipo hoy
-            </h2>
-            <p class="mx-auto mt-3 max-w-xl text-base text-slate-600 dark:text-zinc-400">
-                Entra con la cuenta semilla o sube tu primer archivo .txt para obtener su minuta editable, tareas con responsable y búsqueda FTS5 en segundos.
-            </p>
-            <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-                <a href="#auth-card" class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-base font-semibold text-white transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-emerald-500">
-                    <span>Entrar al espacio de trabajo</span>
-                </a>
-            </div>
-        </section>
     </main>
 
     <!-- PIE DE PÁGINA SEMÁNTICO CON MODALES <dialog> REALES -->
     <footer class="border-t border-slate-200 bg-white py-8 dark:border-[#313131] dark:bg-[#1F1F1F]">
         <div class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6">
             <div class="text-sm text-slate-600 dark:text-zinc-400">
-                <span class="font-semibold text-slate-900 dark:text-white">App Transcripciones</span>
+                <span class="font-semibold text-slate-900 dark:text-white">Unitrax</span>
                 · <span class="font-mono"><?= date('Y') ?></span>
             </div>
             <div class="flex flex-wrap items-center gap-6">
@@ -780,7 +432,7 @@ $taglineLines = [
             </button>
         </div>
         <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-300">
-            App Transcripciones guarda todas las reuniones, intervenciones cronológicas, tareas y decisiones técnicas en el archivo local writable/database/transcripciones.db de tu servidor. Las credenciales se almacenan con hash seguro y las sesiones operan mediante cookies HttpOnly y tokens firmados con HMAC SHA256. Ningún dato se transmite a servicios externos salvo que configures de forma expresa una clave opcional en tu archivo .env.
+            Unitrax guarda todas las reuniones, intervenciones cronológicas, tareas y decisiones técnicas en el archivo local writable/database/transcripciones.db de tu servidor. Las credenciales se almacenan con hash seguro y las sesiones operan mediante cookies HttpOnly y tokens firmados con HMAC SHA256. Ningún dato se transmite a servicios externos salvo que configures de forma expresa una clave opcional en tu archivo .env.
         </p>
         <div class="mt-6 flex justify-end">
             <button type="button" data-close-dialog="privacy-dialog" class="rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white dark:bg-white dark:text-zinc-950">
