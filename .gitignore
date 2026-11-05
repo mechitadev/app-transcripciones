@@ -2,6 +2,9 @@
 # Operating Specific Junk Files
 #-------------------------
 
+.agents/resources/
+graphify-out/
+
 # OS X
 .DS_Store
 .AppleDouble
