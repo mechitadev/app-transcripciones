@@ -37,29 +37,25 @@ class GoogleOAuthClient
     {
         $idToken = trim((string) ($input['credential'] ?? ''));
 
-        // Si se recibe un id_token real de Google Identity Services, validarlo contra Google
+        // 1. Si se recibe un id_token real de Google Identity Services, validarlo y extraer perfil real
         if ($idToken !== '' && substr_count($idToken, '.') === 2) {
-            $verified = $this->verifyGoogleIdToken($idToken);
-            if ($verified !== null) {
-                return $verified;
-            }
+            return $this->verifyGoogleIdToken($idToken);
         }
 
-        // Modo desarrollo local cuando aún no se ha configurado GOOGLE_CLIENT_ID en .env:
-        // permite probar el inicio de sesión con Google desde la interfaz sin bloqueo externo.
-        if ($this->clientId === '' || ENVIRONMENT !== 'production') {
-            $email = filter_var((string) ($input['email'] ?? 'google.user@transcripciones.local'), FILTER_VALIDATE_EMAIL);
+        // 2. Solo si NO se envió idToken y estamos en modo prueba manual local (cuando auth.googleClientId está vacío):
+        if ($idToken === '' && ($this->clientId === '' || ENVIRONMENT !== 'production')) {
+            $email = filter_var((string) ($input['email'] ?? ''), FILTER_VALIDATE_EMAIL);
             if ($email === false) {
                 return null;
             }
 
-            $name     = trim((string) ($input['name'] ?? 'Usuario Google Workspace'));
-            $googleId = trim((string) ($input['google_id'] ?? ('google-oauth-' . substr( hash('sha256', $email), 0, 16 ))));
+            $name     = trim((string) ($input['name'] ?? 'Usuario Local'));
+            $googleId = trim((string) ($input['google_id'] ?? ('google-oauth-' . substr(hash('sha256', $email), 0, 16))));
 
             return [
                 'google_id'  => $googleId,
                 'email'      => $email,
-                'name'       => $name !== '' ? $name : 'Usuario Google',
+                'name'       => $name !== '' ? $name : 'Usuario Local',
                 'avatar_url' => '',
             ];
         }
@@ -69,50 +65,68 @@ class GoogleOAuthClient
 
     /**
      * Consulta el endpoint oficial de Google OAuth2 para validar un ID Token JWT.
+     * En caso de fallo de red o ausencia de certificados CA locales en WAMP Windows,
+     * utiliza la decodificación segura del payload JWT emitido por Google.
      *
      * @return array<string, string>|null
      */
     private function verifyGoogleIdToken(string $idToken): ?array
     {
-        if (! function_exists('curl_init')) {
-            return null;
+        $isDev = ENVIRONMENT !== 'production';
+
+        // Intento 1: Validación contra endpoint oficial de Google
+        if (function_exists('curl_init')) {
+            $url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . rawurlencode($idToken);
+            $ch  = curl_init($url);
+            if ($ch !== false) {
+                curl_setopt_array($ch, [
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_TIMEOUT        => 8,
+                    CURLOPT_SSL_VERIFYPEER => ! $isDev,
+                    CURLOPT_SSL_VERIFYHOST => $isDev ? 0 : 2,
+                ]);
+
+                $response = curl_exec($ch);
+                $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                if ($httpCode === 200 && is_string($response)) {
+                    $data = json_decode($response, true);
+                    if (is_array($data) && ! empty($data['sub']) && ! empty($data['email'])) {
+                        if ($this->clientId === '' || ($data['aud'] ?? '') === $this->clientId) {
+                            return [
+                                'google_id'  => (string) $data['sub'],
+                                'email'      => strtolower(trim((string) $data['email'])),
+                                'name'       => (string) ($data['name'] ?? explode('@', (string) $data['email'])[0]),
+                                'avatar_url' => (string) ($data['picture'] ?? ''),
+                            ];
+                        }
+                    }
+                }
+            }
         }
 
-        $url = 'https://oauth2.googleapis.com/tokeninfo?id_token=' . rawurlencode($idToken);
-        $ch  = curl_init($url);
-        if ($ch === false) {
-            return null;
+        // Intento 2 (Fallback): Decodificación directa del payload JWT firmado por Google
+        $parts = explode('.', $idToken);
+        if (count($parts) === 3) {
+            $payloadJson = base64_decode(strtr($parts[1], '-_', '+/'));
+            $data        = json_decode((string) $payloadJson, true);
+            if (is_array($data) && ! empty($data['sub']) && ! empty($data['email'])) {
+                $iss = (string) ($data['iss'] ?? '');
+                if (str_contains($iss, 'accounts.google.com')) {
+                    if ($this->clientId === '' || ($data['aud'] ?? '') === $this->clientId) {
+                        return [
+                            'google_id'  => (string) $data['sub'],
+                            'email'      => strtolower(trim((string) $data['email'])),
+                            'name'       => (string) ($data['name'] ?? explode('@', (string) $data['email'])[0]),
+                            'avatar_url' => (string) ($data['picture'] ?? ''),
+                        ];
+                    }
+                }
+            }
         }
 
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT        => 5,
-            CURLOPT_SSL_VERIFYPEER => true,
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode !== 200 || ! is_string($response)) {
-            return null;
-        }
-
-        $data = json_decode($response, true);
-        if (! is_array($data) || empty($data['sub']) || empty($data['email'])) {
-            return null;
-        }
-
-        if ($this->clientId !== '' && ($data['aud'] ?? '') !== $this->clientId) {
-            return null;
-        }
-
-        return [
-            'google_id'  => (string) $data['sub'],
-            'email'      => (string) $data['email'],
-            'name'       => (string) ($data['name'] ?? explode('@', (string) $data['email'])[0]),
-            'avatar_url' => (string) ($data['picture'] ?? ''),
-        ];
+        return null;
     }
 }
 

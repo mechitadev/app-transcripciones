@@ -16,6 +16,7 @@ class UserModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
+    protected $afterFind        = ['aplicarMapeoDespuesDeBuscar'];
     protected $allowedFields    = [
         'nombre',
         'correo',
@@ -76,12 +77,16 @@ class UserModel extends Model
             $actualizaciones = [];
             $googleId        = $perfilGoogle['google_id'] ?? null;
             $fotoUrl         = $perfilGoogle['avatar_url'] ?? $perfilGoogle['foto_perfil_url'] ?? null;
+            $nombre          = $perfilGoogle['name'] ?? $perfilGoogle['nombre'] ?? null;
 
-            if (empty($existente['google_id']) && ! empty($googleId)) {
+            if (! empty($googleId)) {
                 $actualizaciones['google_id'] = $googleId;
             }
             if (! empty($fotoUrl)) {
                 $actualizaciones['foto_perfil_url'] = $fotoUrl;
+            }
+            if (! empty($nombre)) {
+                $actualizaciones['nombre'] = $nombre;
             }
             if ($actualizaciones !== []) {
                 $this->update($existente['id'], $actualizaciones);
@@ -131,15 +136,37 @@ class UserModel extends Model
     }
 
     /**
+     * @param array<string, mixed> $eventData
+     * @return array<string, mixed>
+     */
+    protected function aplicarMapeoDespuesDeBuscar(array $eventData): array
+    {
+        if (! isset($eventData['data']) || ! is_array($eventData['data'])) {
+            return $eventData;
+        }
+
+        if (! empty($eventData['singleton'])) {
+            $eventData['data'] = $this->mapearUsuario($eventData['data']);
+        } else {
+            $eventData['data'] = array_map([$this, 'mapearUsuario'], $eventData['data']);
+        }
+
+        return $eventData;
+    }
+
+    /**
      * Mapea y enriquece el registro garantizando variables y claves en español y alias estándar.
      *
      * @param array<string, mixed> $usuario
      * @return array<string, mixed>
      */
-    private function mapearUsuario(array $usuario): array
+    public function mapearUsuario(array $usuario): array
     {
-        $usuario['name']  = $usuario['nombre'] ?? '';
-        $usuario['email'] = $usuario['correo'] ?? '';
+        $usuario['id']              = (int) ($usuario['id'] ?? 0);
+        $usuario['name']            = $usuario['nombre'] ?? $usuario['name'] ?? '';
+        $usuario['email']           = $usuario['correo'] ?? $usuario['email'] ?? '';
+        $usuario['avatar_url']      = $usuario['foto_perfil_url'] ?? $usuario['avatar_url'] ?? '';
+        $usuario['foto_perfil_url'] = $usuario['avatar_url'];
 
         return $usuario;
     }

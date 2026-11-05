@@ -1,5 +1,6 @@
 /**
  * Cliente Frontend · App Transcripciones (Tailwind CSS v4 + Vanilla ES6+)
+
  */
 (function () {
     'use strict';

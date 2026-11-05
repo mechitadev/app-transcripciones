@@ -1,6 +1,6 @@
 <?php
 /**
- * Vista 404 personalizada de marca · App Transcripciones (`app/Views/errors/html/error_404.php`).
+ * Vista 404 personalizada de marca · Unitrax (`app/Views/errors/html/error_404.php`).
  */
 ?>
 <!DOCTYPE html>
@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error 404 · App Transcripciones</title>
+    <title>Error 404 · Unitrax</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@
             No encontramos la página que buscas
         </h1>
         <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
-            La ruta solicitada no existe o fue movida dentro de App Transcripciones.
+            La ruta solicitada no existe o fue movida dentro de Unitrax.
         </p>
         <div class="mt-6">
             <a href="<?= site_url('/') ?>" class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-base font-semibold text-white transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-emerald-500">
