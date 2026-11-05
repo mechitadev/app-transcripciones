@@ -27,7 +27,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Transcripciones · Minutas ejecutivas, tareas accionables y buscador semántico de decisiones técnicas en SQLite</title>
+    <title>Unitrax · Minutas ejecutivas, tareas accionables y buscador semántico de decisiones técnicas en SQLite</title>
     <meta name="description" content="Convierte archivos .txt de reuniones en minutas editables, tareas con responsable y decisiones técnicas indexadas con SQLite FTS5.">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -65,7 +65,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
     <div class="flex h-screen w-full overflow-hidden">
 
         <!-- ZONA 1: SIDEBAR IZQUIERDO COLAPSABLE -->
-        <aside id="workspace-sidebar" aria-label="Historial de reuniones" class="fixed inset-y-0 left-0 z-30 flex w-72 shrink-0 flex-col border-r border-slate-200 bg-white transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:static lg:translate-x-0 dark:border-[#313131] dark:bg-[#1F1F1F]">
+        <aside id="workspace-sidebar" aria-label="Historial de reuniones" class="fixed inset-y-0 left-0 z-30 flex w-80 shrink-0 flex-col border-r border-slate-200 bg-white transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:static lg:translate-x-0 dark:border-[#313131] dark:bg-[#1F1F1F]">
             <!-- Cabecera de Marca + Botón Colapsar -->
             <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3.5 dark:border-[#313131]">
                 <div class="flex items-center gap-2.5">
@@ -79,7 +79,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
                     </span>
                     <div>
                         <span class="block text-sm font-bold tracking-tight text-slate-900 dark:text-white">
-                            App Transcripciones
+                            Unitrax
                         </span>
                         <span class="block font-mono text-[11px] text-slate-500 dark:text-zinc-400">
                             Motor activo: <strong id="ai-engine-text" class="font-semibold text-emerald-600 dark:text-emerald-400"><?= esc($aiEngineName ?? 'heuristic local') ?></strong>
@@ -149,21 +149,21 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
             <!-- Pie de Usuario, Tema y Cerrar Sesión -->
             <div class="border-t border-slate-200 p-3 dark:border-[#313131]">
                 <div class="flex items-center justify-between gap-2">
-                    <div class="flex min-w-0 items-center gap-2.5">
+                    <div class="flex min-w-0 flex-1 items-center gap-2.5" title="<?= esc($userName) ?> &lt;<?= esc($userEmail) ?>&gt;">
                         <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-600/15 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
                             <?= esc($initials) ?>
                         </span>
-                        <div class="min-w-0">
-                            <p class="truncate text-xs font-semibold text-slate-900 dark:text-white">
+                        <div class="min-w-0 flex-1">
+                            <p class="truncate text-xs font-semibold text-slate-900 dark:text-white" title="<?= esc($userName) ?>">
                                 <?= esc($userName) ?>
                             </p>
-                            <p class="truncate font-mono text-[11px] text-slate-500 dark:text-zinc-400">
+                            <p class="truncate font-mono text-[11px] text-slate-500 dark:text-zinc-400" title="<?= esc($userEmail) ?>">
                                 <?= esc($userEmail) ?>
                             </p>
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-1">
+                    <div class="flex shrink-0 items-center gap-1">
                         <button type="button" id="btn-theme-toggle" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-slate-200 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200 dark:hover:bg-[#313131]" aria-label="Cambiar a tema claro" title="Cambiar a tema claro">
                             <svg class="hidden h-4 w-4 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <circle cx="12" cy="12" r="4"/>
