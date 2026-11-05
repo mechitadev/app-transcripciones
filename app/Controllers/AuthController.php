@@ -141,12 +141,14 @@ class AuthController extends BaseController
     private function establishAuthSession(array $user): ResponseInterface
     {
         $token = $this->jwtManager->issueToken($user);
+        $avatar = (string) ($user['foto_perfil_url'] ?? $user['avatar_url'] ?? '');
 
         session()->set([
-            'user_id'    => (int) $user['id'],
-            'user_name'  => (string) $user['name'],
-            'user_email' => (string) $user['email'],
-            'jwt_token'  => $token,
+            'user_id'     => (int) $user['id'],
+            'user_name'   => (string) $user['name'],
+            'user_email'  => (string) $user['email'],
+            'user_avatar' => $avatar,
+            'jwt_token'   => $token,
         ]);
 
         setcookie('auth_token', $token, [

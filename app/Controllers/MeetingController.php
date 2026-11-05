@@ -63,15 +63,19 @@ class MeetingController extends BaseController
 
         $freeModelClient = new FreeModelClient();
 
+        $userId = (int) session()->get('user_id');
+        $userRow = (new \App\Models\UserModel())->find($userId);
+
         return view('dashboard/index', [
             'meetings'          => $meetings,
             'activeMeetingData' => $activeMeetingData,
             'aiEngineName'      => $freeModelClient->getActiveEngineName(),
             'semanticConcepts'  => array_keys(config('Extraction')->semanticSynonyms),
             'currentUser'       => [
-                'id'    => (int) session()->get('user_id'),
-                'name'  => (string) session()->get('user_name'),
-                'email' => (string) session()->get('user_email'),
+                'id'         => $userId,
+                'name'       => (string) ($userRow['name'] ?? session()->get('user_name')),
+                'email'      => (string) ($userRow['email'] ?? session()->get('user_email')),
+                'avatar_url' => (string) ($userRow['avatar_url'] ?? session()->get('user_avatar') ?? ''),
             ],
         ]);
     }

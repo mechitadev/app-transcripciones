@@ -9,6 +9,7 @@
  */
 $userName  = trim((string) ($currentUser['name'] ?? 'Admin'));
 $userEmail = trim((string) ($currentUser['email'] ?? 'admin@transcripciones.local'));
+$userAvatar = trim((string) ($currentUser['avatar_url'] ?? ''));
 $parts     = preg_split('/\s+/u', $userName) ?: [];
 $initials  = '';
 foreach (array_slice($parts, 0, 2) as $p) {
@@ -150,9 +151,13 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
             <div class="border-t border-slate-200 p-3 dark:border-[#313131]">
                 <div class="flex items-center justify-between gap-2">
                     <div class="flex min-w-0 flex-1 items-center gap-2.5" title="<?= esc($userName) ?> &lt;<?= esc($userEmail) ?>&gt;">
-                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-600/15 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
-                            <?= esc($initials) ?>
-                        </span>
+                        <?php if ($userAvatar !== ''): ?>
+                            <img src="<?= esc($userAvatar) ?>" alt="<?= esc($userName) ?>" class="h-8 w-8 shrink-0 rounded-lg object-cover border border-slate-200 dark:border-[#313131]" referrerpolicy="no-referrer">
+                        <?php else: ?>
+                            <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-600/15 font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                                <?= esc($initials) ?>
+                            </span>
+                        <?php endif; ?>
                         <div class="min-w-0 flex-1">
                             <p class="truncate text-xs font-semibold text-slate-900 dark:text-white" title="<?= esc($userName) ?>">
                                 <?= esc($userName) ?>
