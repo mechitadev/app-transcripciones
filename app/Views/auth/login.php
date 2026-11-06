@@ -167,9 +167,6 @@ $taglineLines = [
                             <path d="M5 12h14m-6-6 6 6-6 6"/>
                         </svg>
                     </a>
-                    <button type="button" id="btn-hero-demo" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-base font-semibold text-slate-800 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-slate-100 dark:border-[#313131] dark:bg-[#1F1F1F] dark:text-zinc-200 dark:hover:bg-[#272727]">
-                        <span>Probar con cuenta de demostración</span>
-                    </button>
                 </div>
 
                 <!-- Tira de Métricas Reales en Vivo desde SQLite ($portalStats) -->
@@ -216,7 +213,7 @@ $taglineLines = [
                         Accede a tu espacio de trabajo
                     </h2>
                     <p class="mt-1 text-sm text-slate-600 dark:text-zinc-400">
-                        Ingresa con tus credenciales locales, continúa con Google o usa la cuenta semilla para recorrer las reuniones procesadas.
+                        Ingresa con tu cuenta o continúa con Google para gestionar tus transcripciones.
                     </p>
                 </div>
 
@@ -246,11 +243,11 @@ $taglineLines = [
                         <label for="login-email" class="block text-xs font-semibold text-slate-700 dark:text-zinc-300">
                             Correo electrónico
                         </label>
-                        <input type="text"
+                        <input type="email"
                                id="login-email"
                                name="email"
-                               value="admin@transcripciones.local"
-                               placeholder="nombre@equipo.local"
+                               value=""
+                               placeholder="nombre@correo.com"
                                required
                                autocomplete="username"
                                class="mt-1.5 w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white dark:placeholder:text-zinc-500">
@@ -264,7 +261,7 @@ $taglineLines = [
                             <input type="password"
                                    id="login-password"
                                    name="password"
-                                   value="Admin123*"
+                                   value=""
                                    placeholder="Mínimo 6 caracteres"
                                    required
                                    autocomplete="current-password"
@@ -384,21 +381,6 @@ $taglineLines = [
                         Modo local activo: el inicio con Google funciona en modo de prueba local mientras defines tu variable GOOGLE_CLIENT_ID en .env.
                     </p>
                 <?php endif; ?>
-
-                <!-- Bloque de Autocompletar Cuenta Semilla en 1 Clic -->
-                <div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-3.5 dark:border-[#313131] dark:bg-[#181818]">
-                    <div class="flex items-center justify-between gap-2">
-                        <span class="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                            Acceso rápido de evaluación
-                        </span>
-                        <button type="button" id="btn-fill-demo" class="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-700 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-emerald-500/20 dark:text-emerald-300">
-                            Usar cuenta semilla
-                        </button>
-                    </div>
-                    <p class="mt-1.5 font-mono text-xs text-slate-600 dark:text-zinc-400">
-                        Cuenta disponible: admin@transcripciones.local · Clave: Admin123*
-                    </p>
-                </div>
             </div>
         </section>
     </main>
@@ -550,32 +532,7 @@ $taglineLines = [
                 });
             }
 
-            // 5. Autocompletar credenciales demo en 1 clic
-            function fillAndFocusDemo(autoSubmit) {
-                switchTab(true);
-                inputEmail.value = 'admin@transcripciones.local';
-                inputPwd.value = 'Admin123*';
-                inputEmail.focus();
-                if (autoSubmit) {
-                    formLogin.requestSubmit();
-                }
-            }
-
-            const btnFillDemo = document.getElementById('btn-fill-demo');
-            if (btnFillDemo) {
-                btnFillDemo.addEventListener('click', function () {
-                    fillAndFocusDemo(false);
-                });
-            }
-
-            const btnHeroDemo = document.getElementById('btn-hero-demo');
-            if (btnHeroDemo) {
-                btnHeroDemo.addEventListener('click', function () {
-                    fillAndFocusDemo(true);
-                });
-            }
-
-            // 6. Envío de Autenticación (Login / Registro / Google)
+            // 5. Envío de Autenticación (Login / Registro / Google)
             async function submitAuth(url, payload, btnEl) {
                 if (btnEl) btnEl.disabled = true;
                 alertBox.hidden = true;
