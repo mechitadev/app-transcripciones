@@ -174,3 +174,104 @@
     transform: none !important;
   }
 }
+
+/* Checkbox Premium SaaS (Sincronizado con diseño oscuro / esmeralda) */
+.app-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.125rem; /* 18px */
+  height: 1.125rem;
+  border-radius: 0.375rem; /* 6px */
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  margin: 0;
+  vertical-align: middle;
+  outline: none;
+  position: relative;
+  flex-shrink: 0;
+  transition:
+    background-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.dark .app-checkbox {
+  border-color: #383838;
+  background-color: #202020;
+}
+
+.app-checkbox:hover {
+  border-color: #10b981;
+}
+
+.dark .app-checkbox:hover {
+  border-color: #059669;
+  background-color: #262626;
+}
+
+.app-checkbox:focus-visible {
+  box-shadow: 0 0 0 2px #10b981;
+}
+
+.app-checkbox:checked {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='3.5 8.5 6.5 11.5 12.5 5.5'/%3E%3C/svg%3E") !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: 72% 72% !important;
+}
+
+.dark .app-checkbox:checked {
+  background-color: #10b981 !important;
+  border-color: #10b981 !important;
+}
+
+/* Select Nativo Estilizado (para inputs de formularios de tareas y decisiones) */
+select.app-select,
+.app-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E");
+  background-position: right 0.65rem center;
+  background-repeat: no-repeat;
+  background-size: 1.15em 1.15em;
+  padding-right: 2.25rem;
+  cursor: pointer;
+}
+
+.dark select.app-select,
+.dark .app-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23a1a1aa'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E");
+}
+
+select option {
+  background-color: #ffffff;
+  color: #0f172a;
+}
+
+.dark select option {
+  background-color: #222222;
+  color: #f4f4f5;
+}
+
+/* Menú flotante y popover de estado/responsable con microinteracción */
+.dropdown-menu-popover {
+  animation: dropdownFadeScale 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: top left;
+}
+
+@keyframes dropdownFadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+

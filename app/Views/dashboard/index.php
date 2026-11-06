@@ -95,7 +95,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
                 </button>
             </div>
 
-            <!-- Acciones de Ingesta (.txt y muestra real) -->
+            <!-- Acciones de Ingesta (.txt) -->
             <div class="space-y-2 border-b border-slate-200 p-3 dark:border-[#313131]">
                 <button type="button" id="btn-upload-txt" class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-emerald-500">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -104,13 +104,6 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
                         <line x1="12" y1="3" x2="12" y2="15"/>
                     </svg>
                     <span>Subir archivo .txt</span>
-                </button>
-
-                <button type="button" id="btn-load-sample" class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-slate-200 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200 dark:hover:bg-[#313131]">
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <polygon points="5 3 19 12 5 21 5 3"/>
-                    </svg>
-                    <span>Cargar muestra formato real</span>
                 </button>
             </div>
 
@@ -396,7 +389,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
 
                                 <select id="new-task-assignee"
                                         aria-label="Responsable"
-                                        class="sm:col-span-3 rounded-xl border border-slate-300 bg-slate-50 px-2.5 py-2 text-xs font-medium text-slate-900 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white"></select>
+                                        class="app-select sm:col-span-3 rounded-xl border border-slate-300 bg-slate-50 px-2.5 py-2 text-xs font-medium text-slate-900 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white"></select>
 
                                 <input type="text"
                                        id="new-task-timestamp"
@@ -527,7 +520,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
                                             <label for="new-decision-category" class="block text-xs font-semibold text-slate-700 dark:text-zinc-300">
                                                 Categoría
                                             </label>
-                                            <select id="new-decision-category" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white">
+                                            <select id="new-decision-category" class="app-select mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white">
                                                 <option value="decision">Decisión técnica</option>
                                                 <option value="blocker">Bloqueante o limitación</option>
                                                 <option value="architecture">Flujo o arquitectura</option>
@@ -538,7 +531,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
                                             <label for="new-decision-speaker" class="block text-xs font-semibold text-slate-700 dark:text-zinc-300">
                                                 Autor
                                             </label>
-                                            <select id="new-decision-speaker" class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white"></select>
+                                            <select id="new-decision-speaker" class="app-select mt-1 w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-900 focus:border-emerald-500 focus:outline-none dark:border-[#313131] dark:bg-[#272727] dark:text-white"></select>
                                         </div>
                                     </div>
 
@@ -749,7 +742,7 @@ $concepts = ! empty($semanticConcepts) && is_array($semanticConcepts)
                 'viewerQuickDecisionBtn'   => "+ Decisión",
                 'viewerQuickDecisionTitle' => "Convertir esta intervención en decisión técnica indexada",
                 'viewerEmptyFilter'        => "Ninguna línea del diálogo coincide con el filtro aplicado.",
-                'emptyMeetingState'        => "Aún no hay reuniones cargadas en el espacio de trabajo. Sube un archivo .txt o carga la muestra real para comenzar.",
+                'emptyMeetingState'        => "Aún no tienes reuniones en tu espacio de trabajo. Sube tu primer archivo .txt para comenzar.",
                 'sidebarEmptySearch'       => "Ninguna reunión coincide con tu búsqueda.",
                 'meetingUpdatedMsg'        => "Cambios guardados en la reunión.",
                 'uploadSuccessMsg'         => "Transcripción procesada e indexada correctamente.",

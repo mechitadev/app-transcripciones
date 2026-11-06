@@ -45,7 +45,6 @@
         meetingSelect: document.getElementById('meeting-select'),
 
         btnUploadTxt: document.getElementById('btn-upload-txt'),
-        btnLoadSample: document.getElementById('btn-load-sample'),
         btnDeleteMeeting: document.getElementById('btn-delete-meeting'),
         btnExportMarkdown: document.getElementById('btn-export-markdown'),
         btnToggleViewerMobile: document.getElementById('btn-toggle-viewer-mobile'),
@@ -284,7 +283,11 @@
     function renderMetadataAndSpeakers() {
         const m = state.meeting;
         if (!m) {
-            if (dom.meetingTitleDisplay) dom.meetingTitleDisplay.textContent = '—';
+            if (dom.meetingTitleDisplay) dom.meetingTitleDisplay.textContent = 'Sin reunión seleccionada';
+            if (dom.btnEditMeetingTitle) dom.btnEditMeetingTitle.hidden = true;
+            if (dom.btnExportMarkdown) dom.btnExportMarkdown.hidden = true;
+            if (dom.btnDeleteMeeting) dom.btnDeleteMeeting.hidden = true;
+            if (dom.btnEditSummary) dom.btnEditSummary.hidden = true;
             if (dom.metaStartedAt) dom.metaStartedAt.textContent = '—';
             if (dom.metaDuration) dom.metaDuration.textContent = '0';
             if (dom.metaSourceFile) dom.metaSourceFile.textContent = '—';
@@ -296,6 +299,11 @@
             if (dom.newDecisionSpeaker) dom.newDecisionSpeaker.textContent = '';
             return;
         }
+
+        if (dom.btnEditMeetingTitle) dom.btnEditMeetingTitle.hidden = false;
+        if (dom.btnExportMarkdown) dom.btnExportMarkdown.hidden = false;
+        if (dom.btnDeleteMeeting) dom.btnDeleteMeeting.hidden = false;
+        if (dom.btnEditSummary) dom.btnEditSummary.hidden = false;
 
         if (dom.meetingTitleDisplay) {
             dom.meetingTitleDisplay.textContent = m.title || m.titulo || '—';
@@ -399,6 +407,42 @@
     }
 
     /**
+     * Cierra cualquier menú desplegable activo en la lista de tareas.
+     */
+    function closeAllTaskDropdowns() {
+        document.querySelectorAll('.js-status-menu:not(.hidden), .js-assignee-menu:not(.hidden)').forEach(function (m) {
+            m.classList.add('hidden');
+            const trigger = m.parentElement ? m.parentElement.querySelector('button[aria-expanded="true"]') : null;
+            if (trigger) trigger.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    /**
+     * Guarda la edición del contenido de una tarea (Módulo 1).
+     */
+    async function saveTaskSummary(taskId, newSummary, row) {
+        const pEl = row ? row.querySelector('.task-summary-text') : null;
+        const editWrap = row ? row.querySelector('.js-task-edit-wrap') : null;
+        const found = state.tasks.find(function (t) { return String(t.id) === String(taskId); });
+
+        if (editWrap) editWrap.classList.add('hidden');
+        if (pEl) pEl.hidden = false;
+
+        if (!newSummary || !found || newSummary === found.summary) return;
+
+        const response = await fetch(baseUrl + '/api/tasks/' + encodeURIComponent(taskId), {
+            method: 'PATCH',
+            headers: buildHeaders(true),
+            body: JSON.stringify({ summary: newSummary })
+        });
+        if (response.ok) {
+            found.summary = newSummary;
+            if (pEl) pEl.textContent = newSummary;
+            showBanner(i18n.taskUpdatedMsg || '');
+        }
+    }
+
+    /**
      * Renderiza el progreso y la lista de tareas (Módulo 1) con DocumentFragment.
      */
     function renderTasks() {
@@ -480,15 +524,15 @@
             const topRow = document.createElement('div');
             topRow.className = 'flex items-start gap-3';
 
-            // Checkbox 1 clic
+            // Checkbox 1 clic personalizado (SaaS Style)
             const checkInput = document.createElement('input');
             checkInput.type = 'checkbox';
             checkInput.checked = isDone;
             checkInput.dataset.taskId = String(task.id);
-            checkInput.setAttribute('aria-label', i18n.taskToggleDoneLabel || '');
-            checkInput.className = 'js-toggle-task-done mt-1 h-4 w-4 shrink-0 cursor-pointer rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 dark:border-[#313131] dark:bg-[#272727]';
+            checkInput.setAttribute('aria-label', i18n.taskToggleDoneLabel || 'Marcar como completada');
+            checkInput.className = 'app-checkbox js-toggle-task-done mt-0.5';
 
-            // Contenedor de texto editable inline
+            // Contenedor de texto editable inline con visualización completa
             const textWrap = document.createElement('div');
             textWrap.className = 'min-w-0 flex-1';
 
@@ -499,15 +543,50 @@
             summaryP.textContent = task.summary || '';
             summaryP.dataset.taskId = String(task.id);
 
-            const editInput = document.createElement('input');
-            editInput.type = 'text';
-            editInput.hidden = true;
-            editInput.value = task.summary || '';
-            editInput.dataset.taskId = String(task.id);
-            editInput.className = 'js-task-summary-input w-full rounded-lg border border-emerald-500 bg-white px-2.5 py-1 text-sm text-slate-900 focus:outline-none dark:bg-[#272727] dark:text-white';
+            // Editor expandido con Textarea para lectura y edición óptima
+            const editWrap = document.createElement('div');
+            editWrap.className = 'js-task-edit-wrap hidden mt-1 space-y-2';
+
+            const editTextarea = document.createElement('textarea');
+            editTextarea.className = 'js-task-summary-textarea w-full rounded-xl border border-emerald-500 bg-white p-2.5 text-sm leading-relaxed text-slate-900 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-emerald-500/70 dark:bg-[#202020] dark:text-zinc-100 resize-y';
+            editTextarea.rows = 3;
+            editTextarea.value = task.summary || '';
+            editTextarea.dataset.taskId = String(task.id);
+            editTextarea.setAttribute('aria-label', i18n.taskEditBtn || 'Editar contenido de la tarea');
+
+            const editActions = document.createElement('div');
+            editActions.className = 'flex flex-wrap items-center justify-between gap-2';
+
+            const editTip = document.createElement('span');
+            editTip.className = 'font-mono text-[11px] text-slate-400 dark:text-zinc-500';
+            editTip.textContent = 'Ctrl + Enter para guardar · Esc para cancelar';
+
+            const editBtnsWrap = document.createElement('div');
+            editBtnsWrap.className = 'flex items-center gap-1.5 ml-auto';
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'js-cancel-task-edit rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:border-[#383838] dark:bg-[#282828] dark:text-zinc-300 dark:hover:bg-[#313131] transition-colors';
+            cancelBtn.dataset.taskId = String(task.id);
+            cancelBtn.textContent = 'Cancelar';
+
+            const saveBtn = document.createElement('button');
+            saveBtn.type = 'button';
+            saveBtn.className = 'js-save-task-edit rounded-lg bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-500 transition-colors shadow-xs';
+            saveBtn.dataset.taskId = String(task.id);
+            saveBtn.textContent = 'Guardar';
+
+            editBtnsWrap.appendChild(cancelBtn);
+            editBtnsWrap.appendChild(saveBtn);
+
+            editActions.appendChild(editTip);
+            editActions.appendChild(editBtnsWrap);
+
+            editWrap.appendChild(editTextarea);
+            editWrap.appendChild(editActions);
 
             textWrap.appendChild(summaryP);
-            textWrap.appendChild(editInput);
+            textWrap.appendChild(editWrap);
 
             topRow.appendChild(checkInput);
             topRow.appendChild(textWrap);
@@ -519,69 +598,181 @@
             const leftGroup = document.createElement('div');
             leftGroup.className = 'flex flex-wrap items-center gap-2';
 
-            const statusSelect = document.createElement('select');
-            statusSelect.className = 'js-task-status rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-800 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200';
-            statusSelect.dataset.taskId = String(task.id);
-            statusSelect.setAttribute('aria-label', i18n.statusPending || 'Estado');
+            // Map de configuración visual para Estados de Tareas
+            const statusMap = {
+                pending: {
+                    label: i18n.statusPending || 'Pendiente',
+                    dot: 'bg-amber-400 dark:bg-amber-400',
+                    pill: 'border-amber-500/25 bg-amber-500/10 text-amber-800 dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-300 hover:border-amber-500/40'
+                },
+                in_progress: {
+                    label: i18n.statusInProgress || 'En progreso',
+                    dot: 'bg-sky-400 animate-pulse',
+                    pill: 'border-sky-500/30 bg-sky-500/10 text-sky-800 dark:border-sky-400/25 dark:bg-sky-400/15 dark:text-sky-300 hover:border-sky-500/50'
+                },
+                done: {
+                    label: i18n.statusDone || 'Completada',
+                    dot: 'bg-emerald-500',
+                    pill: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:border-emerald-500/25 dark:bg-emerald-500/15 dark:text-emerald-300 hover:border-emerald-500/50'
+                }
+            };
+
+            const currentStatus = statusMap[task.status] || statusMap.pending;
+
+            // Dropdown Custom de Estado (SaaS style, sin selects nativos del SO)
+            const statusWrap = document.createElement('div');
+            statusWrap.className = 'relative inline-block text-left js-status-dropdown';
+
+            const statusBtn = document.createElement('button');
+            statusBtn.type = 'button';
+            statusBtn.className = 'js-status-dropdown-trigger inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold shadow-xs transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 ' + currentStatus.pill;
+            statusBtn.dataset.taskId = String(task.id);
+            statusBtn.setAttribute('aria-haspopup', 'listbox');
+            statusBtn.setAttribute('aria-expanded', 'false');
+            statusBtn.setAttribute('aria-label', (i18n.statusPending || 'Estado') + ': ' + currentStatus.label);
+
+            const statusDot = document.createElement('span');
+            statusDot.className = 'inline-block h-2 w-2 rounded-full ' + currentStatus.dot;
+            statusDot.setAttribute('aria-hidden', 'true');
+
+            const statusText = document.createElement('span');
+            statusText.textContent = currentStatus.label;
+
+            statusBtn.appendChild(statusDot);
+            statusBtn.appendChild(statusText);
+            statusBtn.insertAdjacentHTML('beforeend', '<svg class="h-3 w-3 opacity-60 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>');
+
+            const statusMenu = document.createElement('div');
+            statusMenu.className = 'js-status-menu dropdown-menu-popover hidden absolute left-0 top-full mt-1.5 z-40 w-40 rounded-xl border border-slate-200 bg-white p-1 shadow-2xl dark:border-[#383838] dark:bg-[#202020]';
+            statusMenu.setAttribute('role', 'listbox');
+
             [
-                { value: 'pending', label: i18n.statusPending || 'Pendiente' },
-                { value: 'in_progress', label: i18n.statusInProgress || 'En progreso' },
-                { value: 'done', label: i18n.statusDone || 'Completada' }
+                { value: 'pending', key: 'pending' },
+                { value: 'in_progress', key: 'in_progress' },
+                { value: 'done', key: 'done' }
             ].forEach(function (st) {
-                const opt = document.createElement('option');
-                opt.value = st.value;
-                opt.textContent = st.label;
-                if (task.status === st.value) opt.selected = true;
-                statusSelect.appendChild(opt);
+                const isSelected = (task.status || 'pending') === st.value;
+                const optInfo = statusMap[st.key];
+                const optBtn = document.createElement('button');
+                optBtn.type = 'button';
+                optBtn.setAttribute('role', 'option');
+                optBtn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+                optBtn.dataset.taskId = String(task.id);
+                optBtn.dataset.status = st.value;
+                optBtn.className = 'js-set-task-status flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ' +
+                    (isSelected
+                        ? 'bg-emerald-500/10 font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400'
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-300 dark:hover:bg-[#2b2b2b] dark:hover:text-white');
+
+                const leftSpan = document.createElement('span');
+                leftSpan.className = 'flex items-center gap-2';
+                const dot = document.createElement('span');
+                dot.className = 'inline-block h-2 w-2 rounded-full ' + optInfo.dot.replace('animate-pulse', '');
+                dot.setAttribute('aria-hidden', 'true');
+                const label = document.createElement('span');
+                label.textContent = optInfo.label;
+                leftSpan.appendChild(dot);
+                leftSpan.appendChild(label);
+                optBtn.appendChild(leftSpan);
+
+                if (isSelected) {
+                    optBtn.insertAdjacentHTML('beforeend', '<svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>');
+                }
+
+                statusMenu.appendChild(optBtn);
             });
 
-            const assigneeSelect = document.createElement('select');
-            assigneeSelect.className = 'js-task-assignee rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-800 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-200';
-            assigneeSelect.dataset.taskId = String(task.id);
-            assigneeSelect.setAttribute('aria-label', i18n.decisionSpeakerLabel || 'Responsable');
+            statusWrap.appendChild(statusBtn);
+            statusWrap.appendChild(statusMenu);
+
+            // Dropdown Custom de Responsable (SaaS style)
+            const assigneeWrap = document.createElement('div');
+            assigneeWrap.className = 'relative inline-block text-left js-assignee-dropdown';
 
             const optionsList = participants.includes(task.assignee)
                 ? participants
-                : [task.assignee].concat(participants);
+                : (task.assignee ? [task.assignee].concat(participants) : participants);
+
+            const currentAssigneeName = task.assignee || 'Sin asignar';
+
+            const assigneeBtn = document.createElement('button');
+            assigneeBtn.type = 'button';
+            assigneeBtn.className = 'js-assignee-dropdown-trigger inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-xs transition-all duration-200 hover:border-slate-300 dark:border-[#383838] dark:bg-[#252525] dark:text-zinc-200 dark:hover:border-[#484848] dark:hover:bg-[#2b2b2b] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40';
+            assigneeBtn.dataset.taskId = String(task.id);
+            assigneeBtn.setAttribute('aria-haspopup', 'listbox');
+            assigneeBtn.setAttribute('aria-expanded', 'false');
+            assigneeBtn.setAttribute('aria-label', (i18n.decisionSpeakerLabel || 'Responsable') + ': ' + currentAssigneeName);
+
+            assigneeBtn.insertAdjacentHTML('beforeend', '<svg class="h-3.5 w-3.5 text-slate-400 dark:text-zinc-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>');
+            const assigneeNameSpan = document.createElement('span');
+            assigneeNameSpan.className = 'max-w-[130px] truncate';
+            assigneeNameSpan.textContent = currentAssigneeName;
+            assigneeBtn.appendChild(assigneeNameSpan);
+            assigneeBtn.insertAdjacentHTML('beforeend', '<svg class="h-3 w-3 opacity-60 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>');
+
+            const assigneeMenu = document.createElement('div');
+            assigneeMenu.className = 'js-assignee-menu dropdown-menu-popover hidden absolute left-0 top-full mt-1.5 z-40 max-h-56 w-48 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-2xl dark:border-[#383838] dark:bg-[#202020]';
+            assigneeMenu.setAttribute('role', 'listbox');
 
             optionsList.forEach(function (person) {
                 if (!person) return;
-                const opt = document.createElement('option');
-                opt.value = person;
-                opt.textContent = person;
-                if (person === task.assignee) opt.selected = true;
-                assigneeSelect.appendChild(opt);
+                const isSelected = person === task.assignee;
+                const optBtn = document.createElement('button');
+                optBtn.type = 'button';
+                optBtn.setAttribute('role', 'option');
+                optBtn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+                optBtn.dataset.taskId = String(task.id);
+                optBtn.dataset.assignee = person;
+                optBtn.className = 'js-set-task-assignee flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ' +
+                    (isSelected
+                        ? 'bg-emerald-500/10 font-semibold text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400'
+                        : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-300 dark:hover:bg-[#2b2b2b] dark:hover:text-white');
+
+                const personSpan = document.createElement('span');
+                personSpan.className = 'truncate';
+                personSpan.textContent = person;
+                optBtn.appendChild(personSpan);
+
+                if (isSelected) {
+                    optBtn.insertAdjacentHTML('beforeend', '<svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 ml-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>');
+                }
+
+                assigneeMenu.appendChild(optBtn);
             });
 
-            leftGroup.appendChild(statusSelect);
-            leftGroup.appendChild(assigneeSelect);
+            assigneeWrap.appendChild(assigneeBtn);
+            assigneeWrap.appendChild(assigneeMenu);
+
+            leftGroup.appendChild(statusWrap);
+            leftGroup.appendChild(assigneeWrap);
 
             const rightGroup = document.createElement('div');
             rightGroup.className = 'flex items-center gap-1.5';
 
             const editBtn = document.createElement('button');
             editBtn.type = 'button';
-            editBtn.className = 'js-edit-task-summary rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100 dark:border-[#313131] dark:bg-[#272727] dark:text-zinc-300 dark:hover:bg-[#313131]';
+            editBtn.className = 'js-edit-task-summary inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-1.5 text-xs font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:border-[#383838] dark:bg-[#252525] dark:text-zinc-300 dark:hover:bg-[#313131] dark:hover:text-white';
             editBtn.dataset.taskId = String(task.id);
-            editBtn.title = i18n.taskEditBtn || '';
-            editBtn.setAttribute('aria-label', i18n.taskEditBtn || '');
-            editBtn.textContent = '✎';
+            editBtn.title = i18n.taskEditBtn || 'Editar tarea';
+            editBtn.setAttribute('aria-label', i18n.taskEditBtn || 'Editar tarea');
+            editBtn.innerHTML = '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>';
 
             const jumpBtn = document.createElement('button');
             jumpBtn.type = 'button';
-            jumpBtn.className = 'js-jump-minute rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 font-mono text-xs font-semibold text-emerald-700 hover:bg-emerald-500/20 dark:text-emerald-300';
+            jumpBtn.className = 'js-jump-minute inline-flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 font-mono text-xs font-semibold text-emerald-700 transition-colors hover:bg-emerald-500/20 dark:text-emerald-300';
             jumpBtn.dataset.timestamp = task.timestamp_label || '00:00';
             jumpBtn.dataset.entryId = String(task.entry_id || '');
-            jumpBtn.title = i18n.taskJumpToMinute || '';
-            jumpBtn.textContent = (task.timestamp_label || '00:00') + ' ↗';
+            jumpBtn.title = i18n.taskJumpToMinute || 'Ir al minuto';
+            jumpBtn.innerHTML = '<span>' + (task.timestamp_label || '00:00') + '</span>' +
+                '<svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="7 17 17 7 17 17"/><polyline points="7 7 17 7"/></svg>';
 
             const delBtn = document.createElement('button');
             delBtn.type = 'button';
-            delBtn.className = 'js-delete-task rounded-lg border border-red-500/30 bg-red-500/10 px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-500/20 dark:text-red-300';
+            delBtn.className = 'js-delete-task inline-flex items-center justify-center rounded-lg border border-red-500/30 bg-red-500/10 p-1.5 text-xs font-semibold text-red-700 transition-colors hover:bg-red-500/20 dark:text-red-300';
             delBtn.dataset.taskId = String(task.id);
-            delBtn.title = i18n.taskDeleteBtn || '';
-            delBtn.setAttribute('aria-label', i18n.taskDeleteBtn || '');
-            delBtn.textContent = '×';
+            delBtn.title = i18n.taskDeleteBtn || 'Eliminar tarea';
+            delBtn.setAttribute('aria-label', i18n.taskDeleteBtn || 'Eliminar tarea');
+            delBtn.innerHTML = '<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
 
             rightGroup.appendChild(editBtn);
             rightGroup.appendChild(jumpBtn);
@@ -1171,26 +1362,7 @@
         });
     }
 
-    if (dom.btnLoadSample) {
-        dom.btnLoadSample.addEventListener('click', async function () {
-            dom.btnLoadSample.disabled = true;
-            try {
-                const response = await fetch(baseUrl + '/api/meetings/upload', {
-                    method: 'POST',
-                    headers: buildHeaders(true),
-                    body: JSON.stringify({ use_sample: 1 })
-                });
-                const result = await response.json();
-                if (response.ok && result.status === 'ok' && result.data) {
-                    showBanner(result.message || i18n.uploadSuccessMsg || '');
-                    hydrateMeetingData(result.data);
-                    await refreshMeetingsList(result.meeting_id);
-                }
-            } finally {
-                dom.btnLoadSample.disabled = false;
-            }
-        });
-    }
+
 
     // 5. Eliminación de Reunión con Modal <dialog>
     if (dom.btnDeleteMeeting) {
@@ -1463,6 +1635,80 @@
         });
 
         dom.tasksList.addEventListener('click', async function (e) {
+            // Dropdown de Estado: Toggle abrir/cerrar
+            const statusTrigger = e.target.closest('.js-status-dropdown-trigger');
+            if (statusTrigger) {
+                const wrap = statusTrigger.closest('.js-status-dropdown');
+                const menu = wrap ? wrap.querySelector('.js-status-menu') : null;
+                if (menu) {
+                    const willOpen = menu.classList.contains('hidden');
+                    closeAllTaskDropdowns();
+                    if (willOpen) {
+                        menu.classList.remove('hidden');
+                        statusTrigger.setAttribute('aria-expanded', 'true');
+                    }
+                }
+                return;
+            }
+
+            // Dropdown de Estado: Seleccionar estado
+            const statusOpt = e.target.closest('.js-set-task-status');
+            if (statusOpt) {
+                const taskId = statusOpt.dataset.taskId;
+                const newStatus = statusOpt.dataset.status;
+                closeAllTaskDropdowns();
+
+                const response = await fetch(baseUrl + '/api/tasks/' + encodeURIComponent(taskId), {
+                    method: 'PATCH',
+                    headers: buildHeaders(true),
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (response.ok) {
+                    const found = state.tasks.find(function (t) { return String(t.id) === String(taskId); });
+                    if (found) found.status = newStatus;
+                    renderTasks();
+                    showBanner(i18n.taskUpdatedMsg || '');
+                }
+                return;
+            }
+
+            // Dropdown de Responsable: Toggle abrir/cerrar
+            const assigneeTrigger = e.target.closest('.js-assignee-dropdown-trigger');
+            if (assigneeTrigger) {
+                const wrap = assigneeTrigger.closest('.js-assignee-dropdown');
+                const menu = wrap ? wrap.querySelector('.js-assignee-menu') : null;
+                if (menu) {
+                    const willOpen = menu.classList.contains('hidden');
+                    closeAllTaskDropdowns();
+                    if (willOpen) {
+                        menu.classList.remove('hidden');
+                        assigneeTrigger.setAttribute('aria-expanded', 'true');
+                    }
+                }
+                return;
+            }
+
+            // Dropdown de Responsable: Seleccionar responsable
+            const assigneeOpt = e.target.closest('.js-set-task-assignee');
+            if (assigneeOpt) {
+                const taskId = assigneeOpt.dataset.taskId;
+                const newAssignee = assigneeOpt.dataset.assignee;
+                closeAllTaskDropdowns();
+
+                const response = await fetch(baseUrl + '/api/tasks/' + encodeURIComponent(taskId), {
+                    method: 'PATCH',
+                    headers: buildHeaders(true),
+                    body: JSON.stringify({ assignee: newAssignee })
+                });
+                if (response.ok) {
+                    const found = state.tasks.find(function (t) { return String(t.id) === String(taskId); });
+                    if (found) found.assignee = newAssignee;
+                    renderTasks();
+                    showBanner(i18n.taskUpdatedMsg || '');
+                }
+                return;
+            }
+
             const jumpBtn = e.target.closest('.js-jump-minute');
             if (jumpBtn) {
                 await jumpToTranscriptLine(jumpBtn.dataset.entryId, jumpBtn.dataset.timestamp, null);
@@ -1474,12 +1720,56 @@
                 const row = editBtn.closest('.task-row');
                 if (!row) return;
                 const pEl = row.querySelector('.task-summary-text');
-                const inputEl = row.querySelector('.js-task-summary-input');
-                if (pEl && inputEl) {
-                    pEl.hidden = true;
-                    inputEl.hidden = false;
-                    inputEl.focus();
-                    inputEl.select();
+                const editWrap = row.querySelector('.js-task-edit-wrap');
+                const textarea = row.querySelector('.js-task-summary-textarea');
+                if (pEl && editWrap && textarea) {
+                    const isEditing = !editWrap.classList.contains('hidden');
+                    if (isEditing) {
+                        editWrap.classList.add('hidden');
+                        pEl.hidden = false;
+                    } else {
+                        // Cierra otros editores abiertos para mantener la vista limpia
+                        dom.tasksList.querySelectorAll('.js-task-edit-wrap:not(.hidden)').forEach(function (w) {
+                            w.classList.add('hidden');
+                            const otherP = w.parentElement ? w.parentElement.querySelector('.task-summary-text') : null;
+                            if (otherP) otherP.hidden = false;
+                        });
+
+                        pEl.hidden = true;
+                        editWrap.classList.remove('hidden');
+                        const taskId = editBtn.dataset.taskId;
+                        const found = state.tasks.find(function (t) { return String(t.id) === String(taskId); });
+                        if (found) textarea.value = found.summary || '';
+                        textarea.focus();
+                        textarea.select();
+                    }
+                }
+                return;
+            }
+
+            const cancelBtn = e.target.closest('.js-cancel-task-edit');
+            if (cancelBtn) {
+                const row = cancelBtn.closest('.task-row');
+                if (!row) return;
+                const pEl = row.querySelector('.task-summary-text');
+                const editWrap = row.querySelector('.js-task-edit-wrap');
+                const textarea = row.querySelector('.js-task-summary-textarea');
+                const taskId = cancelBtn.dataset.taskId;
+                const found = state.tasks.find(function (t) { return String(t.id) === String(taskId); });
+                if (textarea && found) textarea.value = found.summary || '';
+                if (editWrap) editWrap.classList.add('hidden');
+                if (pEl) pEl.hidden = false;
+                return;
+            }
+
+            const saveBtn = e.target.closest('.js-save-task-edit');
+            if (saveBtn) {
+                const row = saveBtn.closest('.task-row');
+                if (!row) return;
+                const taskId = saveBtn.dataset.taskId;
+                const textarea = row.querySelector('.js-task-summary-textarea');
+                if (textarea) {
+                    await saveTaskSummary(taskId, textarea.value.trim(), row);
                 }
                 return;
             }
@@ -1501,43 +1791,38 @@
 
         dom.tasksList.addEventListener('keydown', async function (e) {
             const target = e.target;
-            if (!target.classList.contains('js-task-summary-input')) return;
+            if (!target.classList.contains('js-task-summary-textarea')) return;
 
-            if (e.key === 'Enter') {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                 e.preventDefault();
-                target.blur();
+                const row = target.closest('.task-row');
+                const taskId = target.dataset.taskId;
+                if (row && taskId) {
+                    await saveTaskSummary(taskId, target.value.trim(), row);
+                }
             } else if (e.key === 'Escape') {
+                e.preventDefault();
                 const row = target.closest('.task-row');
                 const pEl = row ? row.querySelector('.task-summary-text') : null;
-                target.hidden = true;
+                const editWrap = row ? row.querySelector('.js-task-edit-wrap') : null;
+                const taskId = target.dataset.taskId;
+                const found = state.tasks.find(function (t) { return String(t.id) === String(taskId); });
+                if (target && found) target.value = found.summary || '';
+                if (editWrap) editWrap.classList.add('hidden');
                 if (pEl) pEl.hidden = false;
             }
         });
 
-        dom.tasksList.addEventListener('focusout', async function (e) {
-            const target = e.target;
-            if (!target.classList.contains('js-task-summary-input') || target.hidden) return;
+        // Cierre de dropdowns flotantes al hacer clic fuera o presionar Escape
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.js-status-dropdown') && !e.target.closest('.js-assignee-dropdown')) {
+                closeAllTaskDropdowns();
+            }
+        });
 
-            const taskId = target.dataset.taskId;
-            const newSummary = target.value.trim();
-            const row = target.closest('.task-row');
-            const pEl = row ? row.querySelector('.task-summary-text') : null;
-
-            target.hidden = true;
-            if (pEl) pEl.hidden = false;
-
-            const found = state.tasks.find(function (t) { return String(t.id) === String(taskId); });
-            if (!newSummary || !found || newSummary === found.summary) return;
-
-            const response = await fetch(baseUrl + '/api/tasks/' + encodeURIComponent(taskId), {
-                method: 'PATCH',
-                headers: buildHeaders(true),
-                body: JSON.stringify({ summary: newSummary })
-            });
-            if (response.ok) {
-                found.summary = newSummary;
-                if (pEl) pEl.textContent = newSummary;
-                showBanner(i18n.taskUpdatedMsg || '');
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeAllTaskDropdowns();
             }
         });
     }
