@@ -1,0 +1,26 @@
+# Unitrax
+> Aplicación web fullstack (CodeIgniter 4 + SQLite3 FTS5 + Tailwind CSS v4) para convertir archivos .txt de transcripciones en minutas ejecutivas, tareas con responsable y decisiones técnicas indexadas con búsqueda de texto completo y expansión semántica en español.
+
+## Archivos Principales
+- [app/Libraries/TranscriptParser.php]: Parser determinista O(n) con SplFileObject y límite MAX_LINES=50000.
+- [app/Libraries/AI/TranscriptAnalyzer.php]: Orquestador de análisis y extracción híbrida.
+- [app/Libraries/AI/FreeModelClient.php]: Cliente HTTP cURL para modelos gratuitos (Gemini, Groq, Ollama) con fallback local.
+- [app/Config/Extraction.php]: Diccionario lingüístico de tareas, decisiones, bloqueos y sinónimos semánticos.
+- [app/Config/AI.php]: Configuración centralizada de proveedores y modelos de IA gratuitos.
+- [app/Database/Migrations/2026-11-05-000001_CreateInitialSchema.php]: Esquema SQLite (usuarios, reuniones, intervenciones, minutas_tareas, decisiones_tecnicas, virtual table FTS5 con triggers).
+- [app/Controllers/MeetingController.php]: Controlador MVC de ingesta, visualización, edición inline y exportación Markdown.
+- [app/Controllers/TaskController.php]: Controlador MVC para creación, actualización de estados y borrado de tareas (Módulo 1).
+- [app/Controllers/SearchController.php]: Controlador MVC del buscador semántico con SQLite FTS5 bm25() (Módulo 2).
+- [app/Controllers/AuthController.php]: Autenticación por sesión CI4, JWT HS256 y Google OAuth 2.0.
+- [app/Views/dashboard/index.php]: Vista principal del workspace con diseño de 3 paneles y Tailwind CSS v4.
+- [public/assets/js/app.js]: Cliente JavaScript Vanilla ES6+ con debounce, AbortController y manipulación con DocumentFragment.
+- [docs/API.md]: Especificación completa de los endpoints REST y contratos de payload.
+- [docs/ARCHITECTURE.md]: Manual de arquitectura, diagramas Mermaid y principios de diseño Ponytail.
+- [docs/AI_PIPELINE.md]: Guía detallada del motor de IA en 2 niveles y configuración de API Keys gratuitas.
+
+## Conceptos Clave
+- **Idempotencia:** Cada archivo subido se valida con su hash SHA-256 (`hash_crudo`) para evitar duplicaciones.
+- **SQLite FTS5 + BM25:** Búsqueda full-text de alto rendimiento en local sincronizada automáticamente mediante triggers `trg_decisiones_ai`, `trg_decisiones_ad` y `trg_decisiones_au`.
+- **Expansión Semántica:** Permite encontrar acuerdos técnicos buscando por conceptos afines (ej. `limpieza` expande a `rutina`, `registros`, `basuras` y `campo de estados`).
+- **Filosofía Ponytail:** Cero SDKs de terceros para JWT ni para IA; uso de funciones criptográficas y cURL nativas de PHP.
+
