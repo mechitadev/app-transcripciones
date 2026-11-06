@@ -236,14 +236,26 @@ PROMPT;
 
         $headers = array_merge(['Content-Type: application/json'], $extraHeaders);
 
-        curl_setopt_array($ch, [
+        $curlOptions = [
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => (string) json_encode($payload),
             CURLOPT_HTTPHEADER     => $headers,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT        => $this->config->timeoutSeconds,
             CURLOPT_CONNECTTIMEOUT => 4,
-        ]);
+        ];
+
+        // En entornos locales de desarrollo (WAMP en Windows sin CA bundle global en php.ini),
+        // detectar bundle existente o permitir fallback SSL controlado para no bloquear al usuario.
+        $wampCa = 'C:/wamp64/apps/phpmyadmin5.2.1/vendor/composer/ca-bundle/res/cacert.pem';
+        if (is_file($wampCa)) {
+            $curlOptions[CURLOPT_CAINFO] = $wampCa;
+        } elseif (ENVIRONMENT !== 'production') {
+            $curlOptions[CURLOPT_SSL_VERIFYPEER] = false;
+            $curlOptions[CURLOPT_SSL_VERIFYHOST] = 0;
+        }
+
+        curl_setopt_array($ch, $curlOptions);
 
         $raw      = curl_exec($ch);
         $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
