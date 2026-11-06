@@ -45,7 +45,8 @@ class DecisionModel extends Model
         string $consultaBruta = '',
         ?string $categoria = null,
         ?string $orador = null,
-        ?int $reunionId = null
+        ?int $reunionId = null,
+        ?int $usuarioId = null
     ): array {
         $consultaLimpia     = trim($consultaBruta);
         $terminosExpandidos = $this->expandQueryTerms($consultaLimpia);
@@ -57,6 +58,11 @@ class DecisionModel extends Model
 
         $clausulasWhere = ['1 = 1'];
         $parametros     = [];
+
+        if ($usuarioId !== null && $usuarioId > 0) {
+            $clausulasWhere[] = 'm.usuario_id = ?';
+            $parametros[]     = $usuarioId;
+        }
 
         if ($reunionId !== null && $reunionId > 0) {
             $clausulasWhere[] = 'd.reunion_id = ?';

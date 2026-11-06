@@ -36,12 +36,14 @@ class SearchController extends BaseController
         $category  = (string) ($this->request->getGet('category') ?? '');
         $speaker   = (string) ($this->request->getGet('speaker') ?? '');
         $meetingId = (int) ($this->request->getGet('meeting_id') ?? 0);
+        $userId    = session()->has('user_id') ? (int) session()->get('user_id') : null;
 
         $searchData = $this->decisionModel->searchDecisions(
             $q,
             $category !== '' ? $category : null,
             $speaker !== '' ? $speaker : null,
-            $meetingId > 0 ? $meetingId : null
+            $meetingId > 0 ? $meetingId : null,
+            $userId
         );
 
         return $this->response->setJSON([

@@ -38,13 +38,6 @@ class MeetingController extends BaseController
      */
     public function index()
     {
-        if ($this->meetingModel->countAllResults() === 0) {
-            $samplePath = ROOTPATH . '.agents/resources/formato-transcripcion/formato-real.txt';
-            if (is_file($samplePath)) {
-                $this->ingestFile($samplePath, 'formato-real.txt');
-            }
-        }
-
         if (! $this->isAuthenticated()) {
             $googleClient = new \App\Libraries\Auth\GoogleOAuthClient();
 
@@ -54,7 +47,8 @@ class MeetingController extends BaseController
             ]);
         }
 
-        $meetings = $this->meetingModel->listAllMeetings();
+        $userId   = (int) session()->get('user_id');
+        $meetings = $this->meetingModel->listAllMeetings($userId);
 
         $activeMeetingData = null;
         if ($meetings !== []) {
@@ -62,9 +56,7 @@ class MeetingController extends BaseController
         }
 
         $freeModelClient = new FreeModelClient();
-
-        $userId = (int) session()->get('user_id');
-        $userRow = (new \App\Models\UserModel())->find($userId);
+        $userRow         = (new \App\Models\UserModel())->find($userId);
 
         return view('dashboard/index', [
             'meetings'          => $meetings,
@@ -121,9 +113,11 @@ class MeetingController extends BaseController
      */
     public function list(): ResponseInterface
     {
+        $userId = session()->has('user_id') ? (int) session()->get('user_id') : null;
+
         return $this->response->setJSON([
             'status'   => 'ok',
-            'meetings' => $this->meetingModel->listAllMeetings(),
+            'meetings' => $this->meetingModel->listAllMeetings($userId),
         ]);
     }
 
@@ -205,7 +199,7 @@ class MeetingController extends BaseController
     public function show(int $id): ResponseInterface
     {
         $details = $this->meetingModel->getMeetingFullDetails($id);
-        if ($details === null) {
+        if ($details === null || ! $this->belongsToCurrentUser($details['meeting'])) {
             return $this->response->setStatusCode(404)->setJSON([
                 'status'  => 'error',
                 'message' => 'Reunión no encontrada.',
@@ -227,7 +221,7 @@ class MeetingController extends BaseController
     public function update(int $id): ResponseInterface
     {
         $existing = $this->meetingModel->getMeetingByIdHydrated($id);
-        if ($existing === null) {
+        if ($existing === null || ! $this->belongsToCurrentUser($existing)) {
             return $this->response->setStatusCode(404)->setJSON([
                 'status'  => 'error',
                 'message' => 'La reunión solicitada ya no existe.',
@@ -274,6 +268,14 @@ class MeetingController extends BaseController
      */
     public function export(int $id): ResponseInterface
     {
+        $existing = $this->meetingModel->find($id);
+        if (! is_array($existing) || ! $this->belongsToCurrentUser($existing)) {
+            return $this->response->setStatusCode(404)->setJSON([
+                'status'  => 'error',
+                'message' => 'La reunión solicitada ya no existe.',
+            ]);
+        }
+
         $export = $this->meetingModel->exportMeetingMarkdown($id);
         if ($export === null) {
             return $this->response->setStatusCode(404)->setJSON([
@@ -295,7 +297,7 @@ class MeetingController extends BaseController
     public function delete(int $id): ResponseInterface
     {
         $existing = $this->meetingModel->find($id);
-        if (! is_array($existing)) {
+        if (! is_array($existing) || ! $this->belongsToCurrentUser($existing)) {
             return $this->response->setStatusCode(404)->setJSON([
                 'status'  => 'error',
                 'message' => 'Reunión no encontrada.',
@@ -311,6 +313,23 @@ class MeetingController extends BaseController
     }
 
     /**
+     * Verifica que una reunión pertenezca al usuario autenticado actual.
+     *
+     * @param array<string, mixed> $meeting
+     */
+    private function belongsToCurrentUser(array $meeting): bool
+    {
+        $userId = session()->has('user_id') ? (int) session()->get('user_id') : 0;
+        $owner  = isset($meeting['usuario_id']) ? (int) $meeting['usuario_id'] : 0;
+
+        if ($userId > 0 && $owner > 0) {
+            return $owner === $userId;
+        }
+
+        return true;
+    }
+
+    /**
      * Ejecuta el flujo completo de ingesta (Parser O(n) -> Verificación SHA-256 -> Analyzer -> SQLite Batch).
      *
      * @return array{meeting_id: int, deduplicated: bool}
@@ -318,9 +337,14 @@ class MeetingController extends BaseController
     private function ingestFile(string $filePath, string $sourceFilename, ?string $customTitle = null): array
     {
         $parsed = $this->parser->parseFile($filePath, $customTitle);
+        $userId = session()->has('user_id') ? (int) session()->get('user_id') : null;
 
-        // Idempotencia por hash SHA-256 del archivo
-        $existing = $this->meetingModel->findByHash($parsed['raw_hash']);
+        if ($userId !== null && $userId > 0) {
+            $parsed['raw_hash'] = hash('sha256', $userId . ':' . $parsed['raw_hash']);
+        }
+
+        // Idempotencia por hash SHA-256 del archivo en el espacio del usuario
+        $existing = $this->meetingModel->findByHash($parsed['raw_hash'], $userId);
         if ($existing !== null) {
             return [
                 'meeting_id'   => (int) $existing['id'],
@@ -329,7 +353,6 @@ class MeetingController extends BaseController
         }
 
         $analysis  = $this->analyzer->analyze($parsed['metadata'], $parsed['entries']);
-        $userId    = session()->has('user_id') ? (int) session()->get('user_id') : null;
         $meetingId = $this->meetingModel->saveFullMeeting($parsed, $analysis, $userId, $sourceFilename);
 
         return [

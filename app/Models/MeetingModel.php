@@ -37,21 +37,31 @@ class MeetingModel extends Model
      *
      * @return array<string, mixed>|null
      */
-    public function findByHash(string $hashCrudo): ?array
+    public function findByHash(string $hashCrudo, ?int $usuarioId = null): ?array
     {
-        $fila = $this->where('hash_crudo', $hashCrudo)->first();
+        $builder = $this->where('hash_crudo', $hashCrudo);
+        if ($usuarioId !== null && $usuarioId > 0) {
+            $builder = $builder->where('usuario_id', $usuarioId);
+        }
+
+        $fila = $builder->first();
 
         return is_array($fila) ? $this->hydrateMeetingRow($fila) : null;
     }
 
     /**
-     * Lista todas las reuniones ordenadas de la más reciente a la más antigua.
+     * Lista las reuniones del usuario ordenadas de la más reciente a la más antigua.
      *
      * @return array<int, array<string, mixed>>
      */
-    public function listAllMeetings(): array
+    public function listAllMeetings(?int $usuarioId = null): array
     {
-        $filas = $this->orderBy('id', 'DESC')->findAll(100);
+        $builder = $this->orderBy('id', 'DESC');
+        if ($usuarioId !== null && $usuarioId > 0) {
+            $builder = $builder->where('usuario_id', $usuarioId);
+        }
+
+        $filas = $builder->findAll(100);
 
         return array_map([$this, 'hydrateMeetingRow'], $filas);
     }
